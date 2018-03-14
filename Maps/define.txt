@@ -1,0 +1,5 @@
+? - 916 - hero
+? - 709 - flying enemy
+# - 35 - wall
+  - 32 - empty space
+Ï - 1055 - exit
