@@ -8,6 +8,9 @@ namespace Game.Map
 {
     class Tower: DungeonGenerator
     { 
+        /// <summary>
+        /// Method that creates a round border with random GameObjects inside.
+        /// </summary>
         protected override void fillMap()
         {
             if (map != null && width != height * 2 - 1)
@@ -21,22 +24,22 @@ namespace Game.Map
             }
 
             double radius = (width - 1) / 4;
-            double r_in = radius - 0.4;
-            double r_out = radius + 0.4;
+            double radiusIn = radius - 0.4;
+            double radiusOut = radius + 0.4;
             int iPosition = 0;
             int jPosition = 0;
             Random randomObject = new Random();
 
             for (double i = radius; i >= -radius; --i)
             {
-                for (double j = -radius; j < r_out; j += 0.5)
+                for (double j = -radius; j < radiusOut; j += 0.5)
                 {
                     double value = j * j + i * i;
-                    if (value >= r_in * r_in - 1 && value <= r_out * r_out)
+                    if (value >= radiusIn * radiusIn - 1 && value <= radiusOut * radiusOut)
                     {
                         SetGameObject(iPosition, jPosition, GameObject.Wall);
                     }
-                    else if (value < r_in * r_in && value < r_out * r_out)
+                    else if (value < radiusIn * radiusIn && value < radiusOut * radiusOut)
                     {
                         SetGameObject(iPosition, jPosition, (randomObject.Next(0, 100) < RandomFillPercent) ?
                                             GameObject.Wall : GameObject.EmptySpace);
@@ -56,6 +59,9 @@ namespace Game.Map
             }
         }
 
+        /// <summary>
+        /// Method that creates an exit.
+        /// </summary>
         protected override void setExit()
         {
             setDoor(height / 2, width / 4 * 3, false);
