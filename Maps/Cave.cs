@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Game.Map
+namespace Game.Maps
 {
-    class Cave: DungeonGenerator
+    class Cave: MapGenerator
     {
         protected int seed;
         public int Seed

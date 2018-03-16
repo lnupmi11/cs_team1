@@ -4,23 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Game.Map
+namespace Game.Maps
 {
-    class Tower: DungeonGenerator
+    class Tower: MapGenerator
     { 
         /// <summary>
         /// Method that creates a round border with random GameObjects inside.
         /// </summary>
         protected override void fillMap()
         {
-            if (map != null && width != height * 2 - 1)
+            if (map != null || width != (height - 1) * 2 || (width - 1) % 4 != 0)
             {
-                while (width % 4 - 1 != 0)
+                while ((width - 1) % 4 != 0)
                 {
                     width++;
                 }
 
-                height = width / 2 + 1;
+                height = (width-1) / 2 + 1;
+                base.GenerateMap(height, width);
             }
 
             double radius = (width - 1) / 4;
@@ -35,18 +36,18 @@ namespace Game.Map
                 for (double j = -radius; j < radiusOut; j += 0.5)
                 {
                     double value = j * j + i * i;
-                    if (value >= radiusIn * radiusIn - 1 && value <= radiusOut * radiusOut)
+                    if (value >= radiusIn * radiusIn - 2 && value <= radiusOut * radiusOut + 2)
                     {
-                        SetGameObject(iPosition, jPosition, GameObject.Wall);
+                        map[iPosition, jPosition] = GameObject.Wall;
                     }
                     else if (value < radiusIn * radiusIn && value < radiusOut * radiusOut)
                     {
-                        SetGameObject(iPosition, jPosition, (randomObject.Next(0, 100) < RandomFillPercent) ?
-                                            GameObject.Wall : GameObject.EmptySpace);
+                        map[iPosition, jPosition] = (randomObject.Next(0, 100) < RandomFillPercent) ?
+                                            GameObject.Wall : GameObject.EmptySpace;
                     }
                     else
                     {
-                        SetGameObject(iPosition, jPosition, GameObject.EmptySpace);
+                        map[iPosition, jPosition] = GameObject.EmptySpace;
                     }
 
                     jPosition++;

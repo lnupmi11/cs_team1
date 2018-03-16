@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Game.Map
+namespace Game.Maps
 {
-    abstract class DungeonGenerator
+    abstract class MapGenerator
     {
         protected int height;
         protected int width;
