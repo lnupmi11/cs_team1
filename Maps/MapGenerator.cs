@@ -4,16 +4,37 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Game.Map
+namespace Game.Maps
 {
-    abstract class DungeonGenerator
+    abstract class MapGenerator
     {
         protected int height;
         protected int width;
 
         public int RandomFillPercent;
 
-        protected GameObject[,] map; 
+        protected GameObject[,] map;
+
+        protected int seed;
+        public int Seed
+        {
+            get
+            {
+                if (useRandomSeed)
+                {
+                    seed = DateTime.Now.GetHashCode();
+                    useRandomSeed = false;
+                }
+                return this.seed;
+            }
+            set
+            {
+                this.useRandomSeed = false;
+                this.seed = value;
+            }
+        }
+
+        protected bool useRandomSeed = true;
 
         /// <summary>
         /// Method that set the width and the height of the map.
@@ -36,7 +57,7 @@ namespace Game.Map
         /// <summary>
         /// Method that sets the hero position.
         /// </summary>
-        protected void setHero()
+        protected virtual void setHero()
         {
             int heroIPosition = height/2;
             int heroJPosition = width/2;
@@ -47,7 +68,7 @@ namespace Game.Map
                 heroJPosition--;
             }
 
-            SetGameObject(heroIPosition, heroJPosition, GameObject.Hero);
+            map[heroIPosition, heroJPosition] = GameObject.Hero;
         }
 
         /// <summary>
@@ -119,28 +140,17 @@ namespace Game.Map
         /// <param name="_IsLine"></param>
         protected void setDoor(int _iPosition, int _jPosition, bool _IsLine)
         {
-            SetGameObject(_iPosition, _jPosition, GameObject.Exit);
+            map[_iPosition, _jPosition] = GameObject.Exit;
             if (_IsLine)
             {
-                SetGameObject(_iPosition, _jPosition + 1, GameObject.Exit);
-                SetGameObject(_iPosition, _jPosition - 1, GameObject.Exit);
+                map[_iPosition, _jPosition + 1] = GameObject.Exit;
+                map[_iPosition, _jPosition - 1] = GameObject.Exit;
             }
             else
             {
-                SetGameObject(_iPosition + 1, _jPosition, GameObject.Exit);
-                SetGameObject(_iPosition - 1, _jPosition, GameObject.Exit);
+                map[_iPosition + 1, _jPosition] = GameObject.Exit;
+                map[_iPosition - 1, _jPosition] = GameObject.Exit;
             }
-        }
-
-        /// <summary>
-        /// Method that helps to set current GameObject at current position
-        /// </summary>
-        /// <param name="_iPosition"></param>
-        /// <param name="_jPosition"></param>
-        /// <param name="_GameObjectName"></param>
-        public void SetGameObject(int _iPosition, int _jPosition, GameObject _GameObjectName)
-        {
-            map[_iPosition, _jPosition] = _GameObjectName;
         }
 
         /// <summary>

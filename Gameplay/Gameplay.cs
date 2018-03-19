@@ -3,25 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Game.Map;
+using Game.Maps;
 
 namespace Game.Gameplay
 {
     class GameProcess
     {
-        private Cave gameMap;
+        private MapGenerator gameMap;
 
         public void StartGame()
         { 
             gameMap = new Cave();
-            gameMap.RandomFillPercent = 45;
+            gameMap.RandomFillPercent = 50;
 
             gameMap.GenerateMap(30, 60);
         }
 
         public void ShowMap()
         {
-            Console.SetWindowSize(60, 31);
+            Console.SetWindowSize(61, 32);
             Console.OutputEncoding = System.Text.Encoding.Unicode;
 
             gameMap.PrintMap();

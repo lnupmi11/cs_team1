@@ -4,26 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Game.Map
+namespace Game.Maps
 {
-    class Cave: DungeonGenerator
+    class Cave: MapGenerator
     {
-        protected int seed;
-        public int Seed
-        {
-            get
-            {
-                return this.seed;
-            }
-            set
-            {
-                this.useRandomSeed = false;
-                this.seed = value;
-            }
-        }
-
-        protected bool useRandomSeed = true;
-
         /// <summary>
         /// Method that generates the map.
         /// </summary>
@@ -31,13 +15,10 @@ namespace Game.Map
         /// <param name="_width"></param>
         public override void GenerateMap(int _height, int _width)
         {
-            this.height = _height;
-            this.width = _width;
-
-            map = new GameObject[height, width];
+            base.GenerateMap(_height, _width);
             fillMap();
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 3; i++)
             {
                 smoothMap();
             }
@@ -51,12 +32,7 @@ namespace Game.Map
         /// </summary>
         protected override void fillMap()
         {
-            if (useRandomSeed)
-            {
-                seed = DateTime.Now.GetHashCode();
-            }
-
-            Random randomSeed = new Random(seed.GetHashCode());
+            Random randomSeed = new Random(Seed);
 
             for (int i = 0; i < height; i++)
             {
@@ -64,12 +40,12 @@ namespace Game.Map
                 {
                     if (i == 0 || i == height - 1 || j == 0 || j == width - 1)
                     {
-                        SetGameObject(i, j, GameObject.Wall);
+                        map[i, j] = GameObject.Wall;
                     }
                     else
                     {
-                        SetGameObject(i, j, (randomSeed.Next(0, 100) < RandomFillPercent) ?
-                            GameObject.Wall : GameObject.EmptySpace);
+                        map[i, j] = (randomSeed.Next(0, 100) < RandomFillPercent) ?
+                            GameObject.Wall : GameObject.EmptySpace;
                     }
                 }
             }
@@ -88,11 +64,11 @@ namespace Game.Map
 
                     if (neightbourWalls > 4)
                     {
-                        SetGameObject(i, j, GameObject.Wall);
+                        map[i, j] = GameObject.Wall;
                     }
                     else if (neightbourWalls < 4)
                     {
-                        SetGameObject(i, j, GameObject.EmptySpace);
+                        map[i, j] = GameObject.EmptySpace;
                     }
                 }
             }
