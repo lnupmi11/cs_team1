@@ -29,7 +29,7 @@ namespace Game.Maps
             double radiusOut = radius + 0.4;
             int iPosition = 0;
             int jPosition = 0;
-            Random randomObject = new Random();
+            Random randomObject = new Random(Seed);
 
             for (double i = radius; i >= -radius; --i)
             {
