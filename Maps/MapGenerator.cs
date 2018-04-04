@@ -30,11 +30,21 @@ namespace Game.Maps
             set
             {
                 this.useRandomSeed = false;
-                this.seed = value;
+                if (value <= 70)
+                {
+                    this.seed = value;
+                }
+                else
+                {
+                    this.seed = 70;
+                }
             }
         }
 
         protected bool useRandomSeed = true;
+
+        protected int heroIPosition;
+        protected int heroJPosition;
 
         /// <summary>
         /// Method that set the width and the height of the map.
@@ -43,8 +53,23 @@ namespace Game.Maps
         /// <param name="_width"></param>
         public virtual void GenerateMap(int _height, int _width)
         {
-            this.height = _height;
-            this.width = _width;
+            if(_height<10)
+            {
+                this.height = 10;
+            }
+            else
+            {
+                this.height = _height;
+            }
+
+            if (_width < 10)
+            {
+                this.width = _width;
+            }
+            else
+            {
+                this.width = _width;
+            }
 
             map = new GameObject[height, width];
         }
@@ -59,8 +84,8 @@ namespace Game.Maps
         /// </summary>
         protected virtual void setHero()
         {
-            int heroIPosition = height/2;
-            int heroJPosition = width/2;
+            heroIPosition = height/2;
+            heroJPosition = width/2;
 
             while (map[heroIPosition, heroJPosition] != GameObject.EmptySpace)
             {
@@ -119,7 +144,7 @@ namespace Game.Maps
                     setDoor(exitIPosition, exitJPosition, true);
                     break;
                 default:
-                    exitIPosition = randomPosition.Next(1, height - 2); ;
+                    exitIPosition = randomPosition.Next(1, height - 2);
                     exitJPosition = 0;
 
                     while (map[exitIPosition, exitJPosition + 1] != GameObject.EmptySpace) 
@@ -150,6 +175,19 @@ namespace Game.Maps
             {
                 map[_iPosition + 1, _jPosition] = GameObject.Exit;
                 map[_iPosition - 1, _jPosition] = GameObject.Exit;
+            }
+        }
+
+        public void MoveHero(int _heroIPosition, int _heroJPosition)
+        {
+            if (_heroIPosition >= 0 && _heroIPosition <= height - 1 && _heroJPosition >= 0 && _heroJPosition <= width - 1)
+            {
+                map[heroIPosition, heroJPosition] = GameObject.EmptySpace;
+
+                this.heroIPosition = _heroIPosition;
+                this.heroJPosition = _heroJPosition;
+
+                map[heroIPosition, heroJPosition] = GameObject.Hero;
             }
         }
 

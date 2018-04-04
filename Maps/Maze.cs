@@ -36,7 +36,10 @@ namespace Game.Maps
         /// </summary>
         protected override void setHero()
         {
-            map[1, 1] = GameObject.Hero;
+            this.heroIPosition = 1;
+            this.heroJPosition = 1;
+
+            map[heroIPosition, heroJPosition] = GameObject.Hero;
         }
 
         /// <summary>
@@ -99,6 +102,9 @@ namespace Game.Maps
         /// </summary>
         protected override void fillMap()
         {
+            int mazeStartingIPosition = 1;
+            int mazeStartingJPosition = 1;
+
             bool generateNewMap = false;
             if (height % 2 != 1)
             {
@@ -116,8 +122,7 @@ namespace Game.Maps
             }
 
             Random randomSide = new Random(Seed);
-            map[1, 1] = GameObject.EmptySpace;
-            addExit(1, 1, randomSide);
+            addExit(mazeStartingIPosition, mazeStartingJPosition, randomSide);
 
             setHero();
             setExit();

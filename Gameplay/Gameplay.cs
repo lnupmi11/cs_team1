@@ -13,10 +13,11 @@ namespace Game.Gameplay
 
         public void StartGame()
         { 
-            gameMap = new Cave();
-            gameMap.RandomFillPercent = 50;
+            gameMap = new Maze();
+            gameMap.RandomFillPercent = 48;
 
             gameMap.GenerateMap(30, 60);
+            
         }
 
         public void ShowMap()

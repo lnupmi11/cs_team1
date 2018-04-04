@@ -11,9 +11,28 @@ namespace Game.Maps
     /// </summary>
     class Dungeon: MapGenerator
     {
+        private struct Room
+        {
+            public int NorthExit;
+            public int SouthExit;
+            public int WestExit;
+            public int EastExit;
+        }
+        private int roomsHeight = 1;
+        private int roomsWidth = 1;
+
+        private Room[,] dungeonRooms;
+
+        public void GenerateMap()
+        {
+
+        }
+
         protected override void fillMap()
         {
-            throw new NotImplementedException();
+            
         }
+
+        
     }
 }
