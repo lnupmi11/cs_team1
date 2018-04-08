@@ -178,7 +178,13 @@ namespace Game.Maps
             }
         }
 
-        public void MoveHero(int _heroIPosition, int _heroJPosition)
+        /// <summary>
+        /// Method that changes the hero position
+        /// TODO: Work in progress.
+        /// </summary>
+        /// <param name="_heroIPosition"></param>
+        /// <param name="_heroJPosition"></param>
+        public virtual void MoveHero(int _heroIPosition, int _heroJPosition)
         {
             if (_heroIPosition >= 0 && _heroIPosition <= height - 1 && _heroJPosition >= 0 && _heroJPosition <= width - 1)
             {

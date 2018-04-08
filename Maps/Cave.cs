@@ -52,6 +52,14 @@ namespace Game.Maps
         }
 
         /// <summary>
+        /// Method that creates an exit on the map.
+        /// </summary>
+        protected override void setExit()
+        {
+            base.setExit();
+        }
+
+        /// <summary>
         /// Method that smooth the wall lines.
         /// </summary>
         private void smoothMap()
@@ -102,11 +110,6 @@ namespace Game.Maps
                 }
             }
             return wallCount;
-        }
-
-        protected override void setExit()
-        {
-            base.setExit();
         }
     }
 }

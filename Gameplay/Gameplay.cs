@@ -13,7 +13,7 @@ namespace Game.Gameplay
 
         public void StartGame()
         { 
-            gameMap = new Maze();
+            gameMap = new Dungeon();
             gameMap.RandomFillPercent = 48;
 
             gameMap.GenerateMap(30, 60);
@@ -26,8 +26,23 @@ namespace Game.Gameplay
             Console.OutputEncoding = System.Text.Encoding.Unicode;
 
             gameMap.PrintMap();
-
+            gameMap.MoveHero(2, 4);
             Console.ReadKey();
+
+            Console.Clear();
+            gameMap.PrintMap();
+            gameMap.MoveHero(4, 7);
+            Console.ReadKey();
+
+            Console.Clear();
+            gameMap.PrintMap();
+            gameMap.MoveHero(7, 5);
+            Console.ReadKey();
+
+            Console.Clear();
+            gameMap.PrintMap();
+            Console.ReadKey();
+
         }
     }
 }

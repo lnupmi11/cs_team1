@@ -7,7 +7,21 @@ using System.Threading.Tasks;
 namespace Game.Maps
 {
     class Tower: MapGenerator
-    { 
+    {
+        /// <summary>
+        /// Method that set the width and the height of the map.
+        /// </summary>
+        /// <param name="_height"></param>
+        /// <param name="_width"></param>
+        public override void GenerateMap(int _height, int _width)
+        {
+            base.GenerateMap(_height, _width);
+
+            fillMap();
+            setHero();
+            setExit();
+        }
+
         /// <summary>
         /// Method that creates a round border with random GameObjects inside.
         /// </summary>
@@ -66,20 +80,6 @@ namespace Game.Maps
         protected override void setExit()
         {
             setDoor(height / 2, width / 4 * 3, false);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="_height"></param>
-        /// <param name="_width"></param>
-        public override void GenerateMap(int _height, int _width)
-        {
-            base.GenerateMap(_height, _width);
-
-            fillMap();
-            setHero();
-            setExit();
         }
     }
 }

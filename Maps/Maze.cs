@@ -32,6 +32,37 @@ namespace Game.Maps
         }
 
         /// <summary>
+        /// Method that fills the map with maze.
+        /// </summary>
+        protected override void fillMap()
+        {
+            int mazeStartingIPosition = 1;
+            int mazeStartingJPosition = 1;
+
+            bool generateNewMap = false;
+            if (height % 2 != 1)
+            {
+                height++;
+                generateNewMap = true;
+            }
+            if (width % 2 != 1)
+            {
+                width++;
+                generateNewMap = true;
+            }
+            if (generateNewMap)
+            {
+                GenerateMap(height, width);
+            }
+
+            Random randomSide = new Random(Seed);
+            addWay(mazeStartingIPosition, mazeStartingJPosition, randomSide);
+
+            setHero();
+            setExit();
+        }
+
+        /// <summary>
         /// Method that sets the hero object on the beginning of the maze.
         /// </summary>
         protected override void setHero()
@@ -98,43 +129,12 @@ namespace Game.Maps
         }
 
         /// <summary>
-        /// Method that fills the map with maze.
-        /// </summary>
-        protected override void fillMap()
-        {
-            int mazeStartingIPosition = 1;
-            int mazeStartingJPosition = 1;
-
-            bool generateNewMap = false;
-            if (height % 2 != 1)
-            {
-                height++;
-                generateNewMap = true;
-            }
-            if (width % 2 != 1)
-            {
-                width++;
-                generateNewMap = true;
-            }
-            if(generateNewMap)
-            {
-                GenerateMap(height, width);
-            }
-
-            Random randomSide = new Random(Seed);
-            addExit(mazeStartingIPosition, mazeStartingJPosition, randomSide);
-
-            setHero();
-            setExit();
-        }
-
-        /// <summary>
         /// Method that builds the maze on the map.
         /// </summary>
         /// <param name="_i"></param>
         /// <param name="_j"></param>
         /// <param name="_randomSide"></param>
-        private void addExit(int _i, int _j, Random _randomSide)
+        private void addWay(int _i, int _j, Random _randomSide)
         {
             bool[] exits = new bool[4];
 
@@ -151,28 +151,28 @@ namespace Game.Maps
                         if (_i - 2 > 0  && map[_i - 2, _j] != GameObject.EmptySpace)
                         {
                             setRoute(_i, _j, -1, 0);
-                            addExit(_i - 2, _j, _randomSide);
+                            addWay(_i - 2, _j, _randomSide);
                         }
                         break;
                     case 1:
                         if (_i + 2 < height - 1 && map[_i + 2, _j] != GameObject.EmptySpace)
                         {
                             setRoute(_i, _j, 1, 0);
-                            addExit(_i + 2, _j, _randomSide);
+                            addWay(_i + 2, _j, _randomSide);
                         }
                         break;
                     case 2:
                         if (_j - 2 > 0 && map[_i, _j - 2] != GameObject.EmptySpace) 
                         {
                             setRoute(_i, _j, 0, -1);
-                            addExit(_i, _j - 2, _randomSide);
+                            addWay(_i, _j - 2, _randomSide);
                         }
                         break;
                     case 3:
                         if (_j + 2 < width - 1 && map[_i, _j + 2] != GameObject.EmptySpace)
                         {
                             setRoute(_i, _j, 0, 1);
-                            addExit(_i, _j + 2, _randomSide);
+                            addWay(_i, _j + 2, _randomSide);
                         }
                         break;
                     default:
