@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Game.Maps;
+using Game.Units;
 
 namespace Game.Gameplay
 {
@@ -12,37 +9,61 @@ namespace Game.Gameplay
         private MapGenerator gameMap;
 
         public void StartGame()
-        { 
-            gameMap = new Dungeon();
-            gameMap.RandomFillPercent = 48;
+        {
+            Console.OutputEncoding = System.Text.Encoding.Unicode;
+            //gameMap = new Maze();
+            //gameMap.RandomFillPercent = 48;
 
-            gameMap.GenerateMap(30, 60);
-            
+            //gameMap.GenerateMap(20, 20);
+            test();
         }
 
         public void ShowMap()
         {
-            Console.SetWindowSize(61, 32);
-            Console.OutputEncoding = System.Text.Encoding.Unicode;
+            Console.SetWindowSize(21, 22);
 
-            gameMap.PrintMap();
-            gameMap.MoveHero(2, 4);
-            Console.ReadKey();
+            ConsoleKeyInfo pressedButton = new ConsoleKeyInfo();
+            int moveResult = 0;
 
-            Console.Clear();
-            gameMap.PrintMap();
-            gameMap.MoveHero(4, 7);
-            Console.ReadKey();
+            while (pressedButton.Key != ConsoleKey.Escape)
+            {
+                Console.Clear();
+                gameMap.PrintMap();
 
-            Console.Clear();
-            gameMap.PrintMap();
-            gameMap.MoveHero(7, 5);
-            Console.ReadKey();
+                pressedButton = Console.ReadKey();
+                switch (pressedButton.Key)
+                {
+                    case ConsoleKey.UpArrow:
+                        moveResult = gameMap.MoveHero(gameMap.HeroPosition.Item1 - 1, gameMap.HeroPosition.Item2);
+                        break;
+                    case ConsoleKey.DownArrow:
+                        moveResult = gameMap.MoveHero(gameMap.HeroPosition.Item1 + 1, gameMap.HeroPosition.Item2);
+                        break;
+                    case ConsoleKey.RightArrow:
+                        moveResult = gameMap.MoveHero(gameMap.HeroPosition.Item1, gameMap.HeroPosition.Item2 + 1);
+                        break;
+                    case ConsoleKey.LeftArrow:
+                        moveResult = gameMap.MoveHero(gameMap.HeroPosition.Item1, gameMap.HeroPosition.Item2 - 1);
+                        break;
+                    default:
+                        break;
+                }
 
-            Console.Clear();
-            gameMap.PrintMap();
-            Console.ReadKey();
+                if (moveResult == 1)
+                {
+                    gameMap=new Tower();
+                    gameMap.GenerateMap(20, 20);
+                }
+            }
 
+        }
+
+        public void test()
+        {
+            Hero hero = new Hero();
+            Unit unit = new Unit();
+
+            Fight.StartFight(ref hero, ref unit);
         }
     }
 }

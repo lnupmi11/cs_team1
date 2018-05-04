@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Game.Objects;
 
 namespace Game.Maps
 {
@@ -13,7 +10,7 @@ namespace Game.Maps
         /// </summary>
         /// <param name="_height"></param>
         /// <param name="_width"></param>
-        public override void GenerateMap(int _height, int _width)
+        public override void GenerateMap(uint _height, uint _width)
         {
             base.GenerateMap(_height, _width);
             fillMap();
@@ -49,14 +46,6 @@ namespace Game.Maps
                     }
                 }
             }
-        }
-
-        /// <summary>
-        /// Method that creates an exit on the map.
-        /// </summary>
-        protected override void setExit()
-        {
-            base.setExit();
         }
 
         /// <summary>

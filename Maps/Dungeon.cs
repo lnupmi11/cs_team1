@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Game.Objects;
 
 namespace Game.Maps
 {
@@ -15,42 +13,41 @@ namespace Game.Maps
         /// </summary>
         private const int roomSize = 5;
 
-        /// <summary>
-        /// Exits coordinats on the different levels
-        /// </summary>
-        private List<Tuple<int, int>> levelBroders = new List<Tuple<int, int>>();
+        private bool[,] roomExist;
 
-        private int maxHeight = 5;
-        private int maxWidth = 5;
+
+        private uint minHeight = 5;
+        private uint minWidth = 5;
 
         /// <summary>
         /// Method that set the max width and the height of the map.
         /// </summary>
         /// <param name="_height"></param>
         /// <param name="_width"></param>
-        public override void GenerateMap(int _height, int _width)
+        public override void GenerateMap(uint _height, uint _width)
         {
-            maxHeight += _height;
-            maxWidth += _width;
+            minHeight += _height;
+            minWidth += _width;
 
-            while (maxHeight % 5 != 0) 
+            while (minHeight % 5 != 0) 
             {
-                maxHeight++;
+                minHeight++;
             }
-            while (maxWidth % 5 != 0) 
+            while (minWidth % 5 != 0) 
             {
-                maxWidth++;
+                minWidth++;
             }
 
-            this.height = roomSize;
-            this.width = roomSize;
+            this.height = minHeight;
+            this.width = minWidth;
 
-            map = new GameObject[maxHeight, maxWidth];
-            levelBroders.Add(new Tuple<int, int>(0, roomSize - 1));
+            map = new GameObject[height, width];
+            roomExist = new bool[minHeight / roomSize, minWidth / roomSize];
+
+            roomExist[0, 0] = true;
 
             fillMap();
             setHero();
-
         }
 
         /// <summary>
@@ -59,6 +56,7 @@ namespace Game.Maps
         protected override void fillMap()
         {
             setRoom(0, 0);
+            map[roomSize - 1, (roomSize / 2)] = GameObject.EmptySpace;
         }
 
         /// <summary>
@@ -72,38 +70,60 @@ namespace Game.Maps
             map[heroIPosition, heroJPosition] = GameObject.Hero;
         }
 
-        public override void MoveHero(int _heroIPosition, int _heroJPosition)
+        /// <summary>
+        /// Method that changes the hero position.
+        /// </summary>
+        /// <param name="_heroIPosition"></param>
+        /// <param name="_heroJPosition"></param>
+        /// <returns></returns>
+        public override int MoveHero(uint _heroIPosition, uint _heroJPosition)
         {
-            base.MoveHero(_heroIPosition, _heroJPosition);
-            addRoom(heroIPosition, heroJPosition);
+            int moveResult;
+
+            moveResult = base.MoveHero(_heroIPosition, _heroJPosition);
+
+            if (moveResult == 0)
+            {
+                addRoom(_heroIPosition, _heroJPosition);
+            }
+
+            return moveResult;
         }
 
         /// <summary>
-        /// Method that creates a room on the current coordinats.
+        /// Method that creates a new room if the hero is on the border.
         /// </summary>
-        /// <param name="_iStartPosition"></param>
-        /// <param name="_jStartPosition"></param>
-        private void addRoom(int _iStartPosition, int _jStartPosition)
+        /// <param name="_iPosition"></param>
+        /// <param name="_jPosition"></param>
+        private void addRoom(uint _iPosition, uint _jPosition)
         {
-            if (heroJPosition >= levelBroders[heroIPosition / 5].Item2)
+            if (_iPosition % 5 == 0 && _iPosition != 0 &&
+                     !roomExist[_iPosition / roomSize - 1, _jPosition / roomSize])
             {
-                setRoom(heroIPosition - roomSize / 2, heroJPosition + 1);
-                levelBroders[heroIPosition / 5] = new Tuple<int, int>(levelBroders[heroIPosition / 5].Item1, heroJPosition + roomSize);
-                map[heroIPosition, heroJPosition + 1] = GameObject.EmptySpace;
-                this.width += roomSize;
+                setRoom(_iPosition - roomSize, _jPosition - (roomSize / 2));
+                roomExist[_iPosition / roomSize - 1, _jPosition / roomSize] = true;
+                map[_iPosition - 1, _jPosition] = GameObject.EmptySpace;
             }
-            else if (heroJPosition <= levelBroders[heroIPosition / 5].Item1)
+            else if (_iPosition % 5 == 4 && _iPosition != height - 1 &&
+                     !roomExist[_iPosition / roomSize + 1, _jPosition / roomSize])
             {
-                setRoom(heroIPosition - roomSize / 2, heroJPosition - 5);
-                levelBroders[heroIPosition / 5] = new Tuple<int, int>(heroJPosition - roomSize, levelBroders[heroIPosition / 5].Item2);
-                map[heroIPosition, heroJPosition - 1] = GameObject.EmptySpace;
+                setRoom(_iPosition + 1, _jPosition - (roomSize / 2));
+                roomExist[_iPosition / roomSize + 1, _jPosition / roomSize] = true;
+                map[_iPosition + 1, _jPosition] = GameObject.EmptySpace;
             }
-            else if (heroIPosition >= levelBroders.Count * 5 - 1)
+            else if (_jPosition % 5 == 0 && _jPosition != 0 &&
+                     !roomExist[_iPosition / roomSize, _jPosition / roomSize - 1])
             {
-                setRoom(heroIPosition + 1, heroJPosition - roomSize / 2);
-                levelBroders.Add(new Tuple<int, int>(heroJPosition - roomSize / 2, heroJPosition + roomSize / 2));
-                map[heroIPosition + 1, heroJPosition] = GameObject.EmptySpace;
-                this.height += roomSize;
+                setRoom(_iPosition - (roomSize/2), _jPosition - (roomSize));
+                roomExist[_iPosition / roomSize, _jPosition / roomSize - 1] = true;
+                map[_iPosition, _jPosition - 1] = GameObject.EmptySpace;
+            }
+            else if (_jPosition % 5 == 4 && _jPosition != width-1 &&
+                     !roomExist[_iPosition / roomSize, _jPosition / roomSize + 1])
+            {
+                setRoom(_iPosition - (roomSize / 2), _jPosition + 1);
+                roomExist[_iPosition / roomSize, _jPosition / roomSize + 1] = true;
+                map[_iPosition, _jPosition + 1] = GameObject.EmptySpace;
             }
         }
 
@@ -112,19 +132,19 @@ namespace Game.Maps
         /// </summary>
         /// <param name="_iStartPosition"></param>
         /// <param name="_jStartPosition"></param>
-        private void setRoom(int _iStartPosition, int _jStartPosition)
+        private void setRoom(uint _iStartPosition, uint _jStartPosition)
         {
             Random randomExit = new Random();
 
-            for (int i = _iStartPosition; i < _iStartPosition + roomSize; i++)
+            for (var i = _iStartPosition; i < _iStartPosition + roomSize; i++)
             {
-                for (int j = _jStartPosition; j < _jStartPosition + roomSize; j++)
+                for (var j = _jStartPosition; j < _jStartPosition + roomSize; j++)
                 {
                     if (i == _iStartPosition || i == _iStartPosition + roomSize - 1 || j == _jStartPosition || j == _jStartPosition + roomSize - 1)
                     {
                         if (i == _iStartPosition + roomSize / 2 || j == _jStartPosition + roomSize / 2)
                         {
-                            if (randomExit.Next(0, 101) > 30 && i != 0 && i != maxHeight - 1 && j != 0 && j != maxWidth - 1)
+                            if (randomExit.Next(0, 101) > 20 && i != 0 && i != minHeight - 1 && j != 0 && j != minWidth - 1)
                             {
                                 map[i, j] = GameObject.EmptySpace;
                             }

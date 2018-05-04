@@ -1,16 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Game.Objects;
 
 namespace Game.Maps
 {
     abstract class MapGenerator
     {
-        protected int height;
-        protected int width;
+        protected uint height;
+        protected uint width;
 
+        /// <summary>
+        /// The percent of non allowed to move blocks on the map.
+        /// </summary>
         public int RandomFillPercent;
 
         protected GameObject[,] map;
@@ -43,15 +43,23 @@ namespace Game.Maps
 
         protected bool useRandomSeed = true;
 
-        protected int heroIPosition;
-        protected int heroJPosition;
+        protected uint heroIPosition;
+        protected uint heroJPosition;
+
+        public Tuple<uint, uint> HeroPosition
+        {
+            get
+            {
+                return new Tuple<uint, uint>(heroIPosition, heroJPosition);
+            }
+        }
 
         /// <summary>
         /// Method that set the width and the height of the map.
         /// </summary>
         /// <param name="_height"></param>
         /// <param name="_width"></param>
-        public virtual void GenerateMap(int _height, int _width)
+        public virtual void GenerateMap(uint _height, uint _width)
         {
             if(_height<10)
             {
@@ -103,8 +111,8 @@ namespace Game.Maps
         {
             Random randomSide = new Random();
             Random randomPosition = new Random();
-            int exitIPosition;
-            int exitJPosition;
+            uint exitIPosition;
+            uint exitJPosition;
 
             int side=randomSide.Next(0, 4);
 
@@ -112,7 +120,7 @@ namespace Game.Maps
             {
                 case 0:
                     exitIPosition = 0;
-                    exitJPosition = randomPosition.Next(3, width - 4);
+                    exitJPosition = (uint)randomPosition.Next(3, (int)width - 4);
 
                     while (map[exitIPosition + 1, exitJPosition] != GameObject.EmptySpace)
                     {
@@ -122,10 +130,10 @@ namespace Game.Maps
                     setDoor(exitIPosition, exitJPosition, true);
                     break;
                 case 1:
-                    exitIPosition = randomPosition.Next(3, height - 4);
+                    exitIPosition = (uint)randomPosition.Next(3, (int)height - 4);
                     exitJPosition = width - 1;
 
-                    while (map[exitIPosition, exitJPosition - 1] != GameObject.EmptySpace) 
+                    while (map[exitIPosition, exitJPosition - 1] != GameObject.EmptySpace)
                     {
                         exitJPosition--;
                     }
@@ -133,10 +141,10 @@ namespace Game.Maps
                     setDoor(exitIPosition, exitJPosition, false);
                     break;
                 case 2:
-                    exitIPosition = height-1;
-                    exitJPosition = randomPosition.Next(1, width - 2);
+                    exitIPosition = height - 1;
+                    exitJPosition = (uint)randomPosition.Next(1, (int)width - 2);
 
-                    while (map[exitIPosition - 1, exitJPosition] != GameObject.EmptySpace) 
+                    while (map[exitIPosition - 1, exitJPosition] != GameObject.EmptySpace)
                     {
                         exitIPosition--;
                     }
@@ -144,10 +152,10 @@ namespace Game.Maps
                     setDoor(exitIPosition, exitJPosition, true);
                     break;
                 default:
-                    exitIPosition = randomPosition.Next(1, height - 2);
+                    exitIPosition = (uint)randomPosition.Next(1, (int)height - 2);
                     exitJPosition = 0;
 
-                    while (map[exitIPosition, exitJPosition + 1] != GameObject.EmptySpace) 
+                    while (map[exitIPosition, exitJPosition + 1] != GameObject.EmptySpace)
                     {
                         exitJPosition++;
                     }
@@ -163,7 +171,7 @@ namespace Game.Maps
         /// <param name="_iPosition"></param>
         /// <param name="_jPosition"></param>
         /// <param name="_IsLine"></param>
-        protected void setDoor(int _iPosition, int _jPosition, bool _IsLine)
+        protected void setDoor(uint _iPosition, uint _jPosition, bool _IsLine)
         {
             map[_iPosition, _jPosition] = GameObject.Exit;
             if (_IsLine)
@@ -180,21 +188,33 @@ namespace Game.Maps
 
         /// <summary>
         /// Method that changes the hero position
-        /// TODO: Work in progress.
         /// </summary>
         /// <param name="_heroIPosition"></param>
         /// <param name="_heroJPosition"></param>
-        public virtual void MoveHero(int _heroIPosition, int _heroJPosition)
+        public virtual int MoveHero(uint _heroIPosition, uint _heroJPosition)
         {
-            if (_heroIPosition >= 0 && _heroIPosition <= height - 1 && _heroJPosition >= 0 && _heroJPosition <= width - 1)
+            if (_heroIPosition < height && _heroJPosition < width )
             {
+                if (map[_heroIPosition, _heroJPosition] == GameObject.Wall)
+                {
+                    return -1;
+                }
+
+                if (map[_heroIPosition, _heroJPosition] == GameObject.Exit)
+                {
+                    return 1;
+                }
+
                 map[heroIPosition, heroJPosition] = GameObject.EmptySpace;
 
                 this.heroIPosition = _heroIPosition;
                 this.heroJPosition = _heroJPosition;
 
                 map[heroIPosition, heroJPosition] = GameObject.Hero;
+                return 0;
             }
+
+            return -1;
         }
 
         /// <summary>
@@ -202,14 +222,21 @@ namespace Game.Maps
         /// </summary>
         public void PrintMap()
         {
-            
             if (map != null)
             {
-                for (int i = 0; i < height; i++)
+                int visibleArea = 10;
+                for (var i = heroIPosition - visibleArea; i <= heroIPosition + visibleArea; i++)
                 {
-                    for (int j = 0; j < width; j++)
+                    for (var j = heroJPosition - visibleArea; j < heroJPosition + visibleArea; j++)
                     {
-                        Console.Write((char)map[i, j]);
+                        if (i < 0 || i >= height || j < 0 || j >= width)
+                        {
+                            Console.Write((char) GameObject.EmptySpace);
+                        }
+                        else
+                        {
+                            Console.Write((char)map[i, j]);
+                        }
                     }
                     Console.WriteLine();
                 }

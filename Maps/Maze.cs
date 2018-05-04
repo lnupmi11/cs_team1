@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Game.Objects;
 
 namespace Game.Maps
 {
     /// <summary>
     /// Work in progress.
-    /// TODO: generate simple maze.
     /// </summary>
     class Maze : MapGenerator
     {
@@ -16,7 +13,7 @@ namespace Game.Maps
         /// </summary>
         /// <param name="_height"></param>
         /// <param name="_width"></param>
-        public override void GenerateMap(int _height, int _width)
+        public override void GenerateMap(uint _height, uint _width)
         {
             base.GenerateMap(_height, _width);
 
@@ -80,8 +77,8 @@ namespace Game.Maps
         {
             Random randomSide = new Random();
             Random randomPosition = new Random();
-            int exitIPosition;
-            int exitJPosition;
+            uint exitIPosition;
+            uint exitJPosition;
 
             int side = randomSide.Next(0, 4);
 
@@ -89,7 +86,7 @@ namespace Game.Maps
             {
                 case 0:
                     exitIPosition = 0;
-                    exitJPosition = randomPosition.Next(3, width - 4);
+                    exitJPosition = (uint)randomPosition.Next(3, (int)width - 4);
 
                     if (exitJPosition % 2 != 1)
                     {
@@ -97,7 +94,7 @@ namespace Game.Maps
                     }
                     break;
                 case 1:
-                    exitIPosition = randomPosition.Next(3, height - 4);
+                    exitIPosition = (uint)randomPosition.Next(3, (int)height - 4);
                     exitJPosition = width - 1;
 
                     if (exitIPosition % 2 != 1)
@@ -107,7 +104,7 @@ namespace Game.Maps
                     break;
                 case 2:
                     exitIPosition = height - 1;
-                    exitJPosition = randomPosition.Next(1, width - 2);
+                    exitJPosition = (uint)randomPosition.Next(1, (int)width - 2);
 
                     if (exitJPosition % 2 != 1)
                     {
@@ -115,7 +112,7 @@ namespace Game.Maps
                     }
                     break;
                 default:
-                    exitIPosition = randomPosition.Next(1, height - 2); ;
+                    exitIPosition = (uint)randomPosition.Next(1, (int)height - 2); ;
                     exitJPosition = 0;
 
                     if(exitIPosition%2 != 1)

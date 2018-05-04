@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Game.Objects;
 
 namespace Game.Maps
 {
@@ -13,7 +10,7 @@ namespace Game.Maps
         /// </summary>
         /// <param name="_height"></param>
         /// <param name="_width"></param>
-        public override void GenerateMap(int _height, int _width)
+        public override void GenerateMap(uint _height, uint _width)
         {
             base.GenerateMap(_height, _width);
 
@@ -38,11 +35,11 @@ namespace Game.Maps
                 base.GenerateMap(height, width);
             }
 
-            double radius = (width - 1) / 4;
+            double radius = (width - 1) / 4.0;
             double radiusIn = radius - 0.4;
             double radiusOut = radius + 0.4;
-            int iPosition = 0;
-            int jPosition = 0;
+            uint iPosition = 0;
+            uint jPosition = 0;
             Random randomObject = new Random(Seed);
 
             for (double i = radius; i >= -radius; --i)
@@ -50,7 +47,7 @@ namespace Game.Maps
                 for (double j = -radius; j < radiusOut; j += 0.5)
                 {
                     double value = j * j + i * i;
-                    if (value >= radiusIn * radiusIn - 2 && value <= radiusOut * radiusOut + 2)
+                    if (value >= radiusIn * radiusIn - 1 && value <= radiusOut * radiusOut + 1)
                     {
                         map[iPosition, jPosition] = GameObject.Wall;
                     }
