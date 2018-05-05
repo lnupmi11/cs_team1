@@ -11,7 +11,7 @@ namespace Game.Maps
         /// <summary>
         /// The percent of non allowed to move blocks on the map.
         /// </summary>
-        public int RandomFillPercent;
+        public uint RandomFillPercent;
 
         protected GameObject[,] map;
 
@@ -61,23 +61,10 @@ namespace Game.Maps
         /// <param name="_width"></param>
         public virtual void GenerateMap(uint _height, uint _width)
         {
-            if(_height<10)
-            {
-                this.height = 10;
-            }
-            else
-            {
-                this.height = _height;
-            }
+            this.height = (_height < 10) ? 10 : _height;
 
-            if (_width < 10)
-            {
-                this.width = _width;
-            }
-            else
-            {
-                this.width = _width;
-            }
+            this.width = (_width < 10) ? 10 : _width;
+            
 
             map = new GameObject[height, width];
         }
@@ -85,12 +72,12 @@ namespace Game.Maps
         /// <summary>
         /// Method that fills the map with GameObjects.
         /// </summary>
-        protected abstract void fillMap();
+        protected abstract void FillMap();
 
         /// <summary>
         /// Method that sets the hero position.
         /// </summary>
-        protected virtual void setHero()
+        protected virtual void SetHero()
         {
             heroIPosition = height/2;
             heroJPosition = width/2;
@@ -107,14 +94,15 @@ namespace Game.Maps
         /// <summary>
         /// Method that creates an exit on the map.
         /// </summary>
-        protected virtual void setExit()
+        protected virtual void SetExit()
         {
-            Random randomSide = new Random();
-            Random randomPosition = new Random();
+            var randomSide = new Random();
+            var randomPosition = new Random();
+
             uint exitIPosition;
             uint exitJPosition;
 
-            int side=randomSide.Next(0, 4);
+            var side=randomSide.Next(0, 4);
 
             switch (side)
             {
@@ -127,7 +115,7 @@ namespace Game.Maps
                         exitIPosition++;
                     }
 
-                    setDoor(exitIPosition, exitJPosition, true);
+                    SetDoor(exitIPosition, exitJPosition, true);
                     break;
                 case 1:
                     exitIPosition = (uint)randomPosition.Next(3, (int)height - 4);
@@ -138,7 +126,7 @@ namespace Game.Maps
                         exitJPosition--;
                     }
 
-                    setDoor(exitIPosition, exitJPosition, false);
+                    SetDoor(exitIPosition, exitJPosition, false);
                     break;
                 case 2:
                     exitIPosition = height - 1;
@@ -149,7 +137,7 @@ namespace Game.Maps
                         exitIPosition--;
                     }
 
-                    setDoor(exitIPosition, exitJPosition, true);
+                    SetDoor(exitIPosition, exitJPosition, true);
                     break;
                 default:
                     exitIPosition = (uint)randomPosition.Next(1, (int)height - 2);
@@ -160,7 +148,7 @@ namespace Game.Maps
                         exitJPosition++;
                     }
 
-                    setDoor(exitIPosition, exitJPosition, false);
+                    SetDoor(exitIPosition, exitJPosition, false);
                     break;
             }
         }
@@ -171,7 +159,7 @@ namespace Game.Maps
         /// <param name="_iPosition"></param>
         /// <param name="_jPosition"></param>
         /// <param name="_IsLine"></param>
-        protected void setDoor(uint _iPosition, uint _jPosition, bool _IsLine)
+        protected void SetDoor(uint _iPosition, uint _jPosition, bool _IsLine)
         {
             map[_iPosition, _jPosition] = GameObject.Exit;
             if (_IsLine)
@@ -224,10 +212,10 @@ namespace Game.Maps
         {
             if (map != null)
             {
-                int visibleArea = 10;
+                var visibleArea = 10;
                 for (var i = heroIPosition - visibleArea; i <= heroIPosition + visibleArea; i++)
                 {
-                    for (var j = heroJPosition - visibleArea; j < heroJPosition + visibleArea; j++)
+                    for (var j = heroJPosition - visibleArea; j <= heroJPosition + visibleArea; j++)
                     {
                         if (i < 0 || i >= height || j < 0 || j >= width)
                         {

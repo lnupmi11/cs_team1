@@ -11,16 +11,19 @@ namespace Game.Gameplay
         public void StartGame()
         {
             Console.OutputEncoding = System.Text.Encoding.Unicode;
-            //gameMap = new Maze();
-            //gameMap.RandomFillPercent = 48;
+            Console.CursorVisible = false;
+            Console.SetWindowSize(22, 22);
+            Console.SetBufferSize(22, 22);
 
-            //gameMap.GenerateMap(20, 20);
-            test();
+            gameMap = new Maze(50, 25);
+            gameMap.RandomFillPercent = 48;
+
+            ShowMap();
+            //test();
         }
 
         public void ShowMap()
         {
-            Console.SetWindowSize(21, 22);
 
             ConsoleKeyInfo pressedButton = new ConsoleKeyInfo();
             int moveResult = 0;
@@ -28,9 +31,13 @@ namespace Game.Gameplay
             while (pressedButton.Key != ConsoleKey.Escape)
             {
                 Console.Clear();
+                if (gameMap == null)
+                {
+                    break;
+                }
                 gameMap.PrintMap();
 
-                pressedButton = Console.ReadKey();
+                pressedButton = Console.ReadKey(true);
                 switch (pressedButton.Key)
                 {
                     case ConsoleKey.UpArrow:

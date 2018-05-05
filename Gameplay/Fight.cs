@@ -19,7 +19,7 @@ namespace Game.Gameplay
 
         public static int StartFight( ref Hero _hero, ref Unit _unit)
         {
-            Fight fight = new Fight();
+            var fight = new Fight();
 
             if (_hero == null)
             {
@@ -31,14 +31,14 @@ namespace Game.Gameplay
                 return 1;
             }
 
-            ConsoleKeyInfo keyInfo = new ConsoleKeyInfo();
+            var keyInfo = new ConsoleKeyInfo();
 
-            while(_hero.HP > 0 || _unit.HP > 0 || keyInfo.Key != ConsoleKey.Escape) // || exit condition)
+            while(_hero.HP > 0 && _unit.HP > 0 && keyInfo.Key != ConsoleKey.Escape) // || exit condition)
             {
                 Console.Clear();
                 Console.Write(fight.FightMap);
 
-                keyInfo = Console.ReadKey();
+                keyInfo = Console.ReadKey(true);
                 switch (keyInfo.Key)
                 {
                     case ConsoleKey.UpArrow:
@@ -56,8 +56,17 @@ namespace Game.Gameplay
                     case ConsoleKey.A:
                         if (fight.Attack(_hero, _unit, fight.heroIPosition, fight.heroJPosition))
                         {
+                            _unit.HP -= _hero.Damage;
                             Console.Beep();
                         }
+                        break;
+                    case ConsoleKey.R:
+                        if (fight.RangeAttack(_hero, _unit, fight.heroIPosition, fight.heroJPosition))
+                        {
+                            _unit.HP -= _hero.RangeDamage;
+                            Console.Beep();
+                        }
+
                         break;
                     default:
                         break;
@@ -77,7 +86,7 @@ namespace Game.Gameplay
 
             if (_unit is Hero)
             {
-                Hero unit = _unit as Hero;
+                var unit = _unit as Hero;
 
                 battlefield[heroIPosition, heroJPosition] = GameObject.EmptySpace;
                 heroIPosition = _iPosition;
@@ -127,9 +136,32 @@ namespace Game.Gameplay
             return false;
         }
 
+        private bool RangeAttack(Unit _unit, Unit _attackedUnit, uint _iPosition, uint _jPosition)
+        {
+            var leftIPosition = ((_iPosition - _unit.ShootingRange) < 0) ? 0 : _iPosition - _unit.ShootingRange;
+            var rightIPosition = ((_iPosition + _unit.ShootingRange) >= battlefieldHeight) ? battlefieldHeight : _iPosition + _unit.ShootingRange;
+            var leftJPosition = ((_jPosition - _unit.ShootingRange) < 0) ? 0 : _jPosition - _unit.ShootingRange;
+            var rightJPosition = ((_jPosition + _unit.ShootingRange) >= battlefieldWidth) ? battlefieldWidth : _jPosition + _unit.ShootingRange;
+
+            for (var i = leftIPosition; i <= rightIPosition; i++)
+            {
+                for (var j = leftJPosition; j <= rightJPosition; j++)
+                {
+                    if (battlefield[i, j] == _attackedUnit.UnitIcon)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+
+        }
+
         private Fight()
         {
-            Random random = new Random(); 
+            var random = new Random(); 
+
             for (int i = 0; i < battlefieldHeight; i++)
             {
                 for (int j = 0; j < battlefieldWidth; j++)

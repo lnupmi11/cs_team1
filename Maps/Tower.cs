@@ -14,15 +14,15 @@ namespace Game.Maps
         {
             base.GenerateMap(_height, _width);
 
-            fillMap();
-            setHero();
-            setExit();
+            FillMap();
+            SetHero();
+            SetExit();
         }
 
         /// <summary>
         /// Method that creates a round border with random GameObjects inside.
         /// </summary>
-        protected override void fillMap()
+        protected override void FillMap()
         {
             if (map != null || width != (height - 1) * 2 || (width - 1) % 4 != 0)
             {
@@ -35,12 +35,12 @@ namespace Game.Maps
                 base.GenerateMap(height, width);
             }
 
-            double radius = (width - 1) / 4.0;
-            double radiusIn = radius - 0.4;
-            double radiusOut = radius + 0.4;
-            uint iPosition = 0;
-            uint jPosition = 0;
-            Random randomObject = new Random(Seed);
+            var radius = (width - 1) / 4.0;
+            var radiusIn = radius - 0.4;
+            var radiusOut = radius + 0.4;
+            var iPosition = 0;
+            var jPosition = 0;
+            var randomObject = new Random(Seed);
 
             for (double i = radius; i >= -radius; --i)
             {
@@ -74,9 +74,9 @@ namespace Game.Maps
         /// <summary>
         /// Method that creates an exit.
         /// </summary>
-        protected override void setExit()
+        protected override void SetExit()
         {
-            setDoor(height / 2, width / 4 * 3, false);
+            SetDoor(height / 2, width / 4 * 3, false);
         }
     }
 }

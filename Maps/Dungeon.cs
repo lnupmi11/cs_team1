@@ -26,6 +26,8 @@ namespace Game.Maps
         /// <param name="_width"></param>
         public override void GenerateMap(uint _height, uint _width)
         {
+            base.GenerateMap(_height, _width);
+
             minHeight += _height;
             minWidth += _width;
 
@@ -46,23 +48,23 @@ namespace Game.Maps
 
             roomExist[0, 0] = true;
 
-            fillMap();
-            setHero();
+            FillMap();
+            SetHero();
         }
 
         /// <summary>
         /// Method that add the starting room.
         /// </summary>
-        protected override void fillMap()
+        protected override void FillMap()
         {
-            setRoom(0, 0);
+            SetRoom(0, 0);
             map[roomSize - 1, (roomSize / 2)] = GameObject.EmptySpace;
         }
 
         /// <summary>
         /// Method that sets the hero position.
         /// </summary>
-        protected override void setHero()
+        protected override void SetHero()
         {
             this.heroIPosition = roomSize / 2;
             this.heroJPosition = roomSize / 2;
@@ -78,13 +80,11 @@ namespace Game.Maps
         /// <returns></returns>
         public override int MoveHero(uint _heroIPosition, uint _heroJPosition)
         {
-            int moveResult;
-
-            moveResult = base.MoveHero(_heroIPosition, _heroJPosition);
+            var moveResult = base.MoveHero(_heroIPosition, _heroJPosition);
 
             if (moveResult == 0)
             {
-                addRoom(_heroIPosition, _heroJPosition);
+                AddRoom(_heroIPosition, _heroJPosition);
             }
 
             return moveResult;
@@ -95,33 +95,33 @@ namespace Game.Maps
         /// </summary>
         /// <param name="_iPosition"></param>
         /// <param name="_jPosition"></param>
-        private void addRoom(uint _iPosition, uint _jPosition)
+        private void AddRoom(uint _iPosition, uint _jPosition)
         {
             if (_iPosition % 5 == 0 && _iPosition != 0 &&
                      !roomExist[_iPosition / roomSize - 1, _jPosition / roomSize])
             {
-                setRoom(_iPosition - roomSize, _jPosition - (roomSize / 2));
+                SetRoom(_iPosition - roomSize, _jPosition - (roomSize / 2));
                 roomExist[_iPosition / roomSize - 1, _jPosition / roomSize] = true;
                 map[_iPosition - 1, _jPosition] = GameObject.EmptySpace;
             }
             else if (_iPosition % 5 == 4 && _iPosition != height - 1 &&
                      !roomExist[_iPosition / roomSize + 1, _jPosition / roomSize])
             {
-                setRoom(_iPosition + 1, _jPosition - (roomSize / 2));
+                SetRoom(_iPosition + 1, _jPosition - (roomSize / 2));
                 roomExist[_iPosition / roomSize + 1, _jPosition / roomSize] = true;
                 map[_iPosition + 1, _jPosition] = GameObject.EmptySpace;
             }
             else if (_jPosition % 5 == 0 && _jPosition != 0 &&
                      !roomExist[_iPosition / roomSize, _jPosition / roomSize - 1])
             {
-                setRoom(_iPosition - (roomSize/2), _jPosition - (roomSize));
+                SetRoom(_iPosition - (roomSize/2), _jPosition - (roomSize));
                 roomExist[_iPosition / roomSize, _jPosition / roomSize - 1] = true;
                 map[_iPosition, _jPosition - 1] = GameObject.EmptySpace;
             }
             else if (_jPosition % 5 == 4 && _jPosition != width-1 &&
                      !roomExist[_iPosition / roomSize, _jPosition / roomSize + 1])
             {
-                setRoom(_iPosition - (roomSize / 2), _jPosition + 1);
+                SetRoom(_iPosition - (roomSize / 2), _jPosition + 1);
                 roomExist[_iPosition / roomSize, _jPosition / roomSize + 1] = true;
                 map[_iPosition, _jPosition + 1] = GameObject.EmptySpace;
             }
@@ -132,9 +132,9 @@ namespace Game.Maps
         /// </summary>
         /// <param name="_iStartPosition"></param>
         /// <param name="_jStartPosition"></param>
-        private void setRoom(uint _iStartPosition, uint _jStartPosition)
+        private void SetRoom(uint _iStartPosition, uint _jStartPosition)
         {
-            Random randomExit = new Random();
+            var randomExit = new Random();
 
             for (var i = _iStartPosition; i < _iStartPosition + roomSize; i++)
             {

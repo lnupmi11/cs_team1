@@ -5,6 +5,11 @@ namespace Game.Maps
 {
     class Cave: MapGenerator
     {
+        public Cave(uint _height, uint _width)
+        {
+            GenerateMap(_height, _width);
+        }
+
         /// <summary>
         /// Method that generates the map.
         /// </summary>
@@ -13,23 +18,23 @@ namespace Game.Maps
         public override void GenerateMap(uint _height, uint _width)
         {
             base.GenerateMap(_height, _width);
-            fillMap();
+            FillMap();
 
             for (int i = 0; i < 3; i++)
             {
                 smoothMap();
             }
 
-            setHero();
-            setExit();
+            SetHero();
+            SetExit();
         }
 
         /// <summary>
         /// Method that fills the map with GameObjects.
         /// </summary>
-        protected override void fillMap()
+        protected override void FillMap()
         {
-            Random randomSeed = new Random(Seed);
+            var randomSeed = new Random(Seed);
 
             for (int i = 0; i < height; i++)
             {
@@ -79,7 +84,7 @@ namespace Game.Maps
         /// <returns></returns>
         private int getSurroundingWallCount(int _iPosition, int _jPosition)
         {
-            int wallCount = -1;
+            var wallCount = -1;
 
             for (int neightbourI = _iPosition - 1; neightbourI <= _iPosition + 1; neightbourI++)
             {

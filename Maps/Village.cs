@@ -8,7 +8,7 @@ namespace Game.Maps
     /// </summary>
     class Village: MapGenerator
     {
-        protected override void fillMap()
+        protected override void FillMap()
         {
             throw new NotImplementedException();
         }

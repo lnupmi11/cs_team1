@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Game.Objects;
 
 namespace Game.Maps
@@ -8,6 +10,11 @@ namespace Game.Maps
     /// </summary>
     class Maze : MapGenerator
     {
+        public Maze(uint _height, uint _width)
+        {
+            GenerateMap(_height, _width);
+        }
+
         /// <summary>
         /// Method that generates the map.
         /// </summary>
@@ -25,18 +32,18 @@ namespace Game.Maps
                 }
             }
 
-            fillMap();
+            FillMap();
         }
 
         /// <summary>
         /// Method that fills the map with maze.
         /// </summary>
-        protected override void fillMap()
+        protected override void FillMap()
         {
-            int mazeStartingIPosition = 1;
-            int mazeStartingJPosition = 1;
+            var mazeStartingIPosition = 1;
+            var mazeStartingJPosition = 1;
+            var generateNewMap = false;
 
-            bool generateNewMap = false;
             if (height % 2 != 1)
             {
                 height++;
@@ -52,17 +59,17 @@ namespace Game.Maps
                 GenerateMap(height, width);
             }
 
-            Random randomSide = new Random(Seed);
-            addWay(mazeStartingIPosition, mazeStartingJPosition, randomSide);
+            var randomSide = new Random(Seed);
+            AddWay(mazeStartingIPosition, mazeStartingJPosition, randomSide);
 
-            setHero();
-            setExit();
+            SetHero();
+            SetExit();
         }
 
         /// <summary>
         /// Method that sets the hero object on the beginning of the maze.
         /// </summary>
-        protected override void setHero()
+        protected override void SetHero()
         {
             this.heroIPosition = 1;
             this.heroJPosition = 1;
@@ -73,14 +80,14 @@ namespace Game.Maps
         /// <summary>
         /// Method that sets the exit object.
         /// </summary>
-        protected override void setExit()
+        protected override void SetExit()
         {
-            Random randomSide = new Random();
-            Random randomPosition = new Random();
+            var randomSide = new Random();
+            var randomPosition = new Random();
             uint exitIPosition;
             uint exitJPosition;
 
-            int side = randomSide.Next(0, 4);
+            var side = randomSide.Next(0, 4);
 
             switch (side)
             {
@@ -131,11 +138,11 @@ namespace Game.Maps
         /// <param name="_i"></param>
         /// <param name="_j"></param>
         /// <param name="_randomSide"></param>
-        private void addWay(int _i, int _j, Random _randomSide)
+        private void AddWay(int _i, int _j, Random _randomSide)
         {
-            bool[] exits = new bool[4];
+            var exits = new bool[4];
 
-            while(checkExitsExistance(exits))
+            while(CheckExitsExistance(exits))
             {
                 int choosedSide = _randomSide.Next(0, 4);
                 if (exits[choosedSide])
@@ -147,29 +154,29 @@ namespace Game.Maps
                     case 0:
                         if (_i - 2 > 0  && map[_i - 2, _j] != GameObject.EmptySpace)
                         {
-                            setRoute(_i, _j, -1, 0);
-                            addWay(_i - 2, _j, _randomSide);
+                            SetRoute(_i, _j, -1, 0);
+                            AddWay(_i - 2, _j, _randomSide);
                         }
                         break;
                     case 1:
                         if (_i + 2 < height - 1 && map[_i + 2, _j] != GameObject.EmptySpace)
                         {
-                            setRoute(_i, _j, 1, 0);
-                            addWay(_i + 2, _j, _randomSide);
+                            SetRoute(_i, _j, 1, 0);
+                            AddWay(_i + 2, _j, _randomSide);
                         }
                         break;
                     case 2:
                         if (_j - 2 > 0 && map[_i, _j - 2] != GameObject.EmptySpace) 
                         {
-                            setRoute(_i, _j, 0, -1);
-                            addWay(_i, _j - 2, _randomSide);
+                            SetRoute(_i, _j, 0, -1);
+                            AddWay(_i, _j - 2, _randomSide);
                         }
                         break;
                     case 3:
                         if (_j + 2 < width - 1 && map[_i, _j + 2] != GameObject.EmptySpace)
                         {
-                            setRoute(_i, _j, 0, 1);
-                            addWay(_i, _j + 2, _randomSide);
+                            SetRoute(_i, _j, 0, 1);
+                            AddWay(_i, _j + 2, _randomSide);
                         }
                         break;
                     default:
@@ -186,7 +193,7 @@ namespace Game.Maps
         /// <param name="_jPosition"></param>
         /// <param name="_iAddition"></param>
         /// <param name="_jAddition"></param>
-        private void setRoute(int _iPosition, int _jPosition, int _iAddition, int _jAddition)
+        private void SetRoute(int _iPosition, int _jPosition, int _iAddition, int _jAddition)
         {
             map[_iPosition + _iAddition, _jPosition + _jAddition] = GameObject.EmptySpace;
             map[_iPosition + _iAddition + _iAddition, _jPosition + _jAddition + _jAddition] = GameObject.EmptySpace;
@@ -197,16 +204,17 @@ namespace Game.Maps
         /// </summary>
         /// <param name="_exits"></param>
         /// <returns></returns>
-        private bool checkExitsExistance(bool[] _exits)
+        private bool CheckExitsExistance(bool[] _exits)
         {
-            int numberOfSides = 0;
-            for(int i=0;i<_exits.Length;i++)
+            var numberOfSides = 0;
+            foreach (var exit in _exits)
             {
-                if(_exits[i]== true)
+                if(exit== true)
                 {
                     numberOfSides++;
                 }
             }
+
             return numberOfSides != 4;
         }
     }
