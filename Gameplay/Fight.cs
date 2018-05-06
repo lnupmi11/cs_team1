@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Timers;
 using Game.Units;
 using Game.Objects;
 
@@ -15,73 +17,135 @@ namespace Game.Gameplay
         private uint unitIPosition = 3;
         private uint unitJPosition = 8;
 
-        private GameObject[,] battlefield = new GameObject[battlefieldHeight, battlefieldWidth];
+        private readonly GameObject[,] battlefield = new GameObject[battlefieldHeight, battlefieldWidth];
 
-        public static int StartFight( ref Hero _hero, ref Unit _unit)
+        public static int StartFight(ref Hero _hero,ref Unit _unit)
         {
-            var fight = new Fight();
+            var fight = new Fight(_hero, _unit);
 
             if (_hero == null)
             {
                 return -1;
             }
 
-            if (_unit==null)
+            if (_unit == null)
             {
                 return 1;
             }
 
-            var keyInfo = new ConsoleKeyInfo();
+            var keyInfo = new ConsoleKey();
 
-            while(_hero.HP > 0 && _unit.HP > 0 && keyInfo.Key != ConsoleKey.Escape) // || exit condition)
+            while (_hero.HealthPoints > 0 && _unit.HealthPoints > 0 && keyInfo != ConsoleKey.Escape
+            ) // || exit condition)
             {
-                Console.Clear();
-                Console.Write(fight.FightMap);
+                _hero.Energy = 2;
+                _unit.Energy = 2;
 
-                keyInfo = Console.ReadKey(true);
-                switch (keyInfo.Key)
+                while (_hero.Energy > 0 && _hero.HealthPoints >= 0 && _unit.HealthPoints >= 0)
                 {
-                    case ConsoleKey.UpArrow:
-                        fight.Move(_hero, fight.heroIPosition - 1, fight.heroJPosition);
-                        break;
-                    case ConsoleKey.DownArrow:
-                        fight.Move(_hero, fight.heroIPosition + 1, fight.heroJPosition);
-                        break;
-                    case ConsoleKey.RightArrow:
-                        fight.Move(_hero, fight.heroIPosition, fight.heroJPosition + 1);
-                        break;
-                    case ConsoleKey.LeftArrow:
-                        fight.Move(_hero, fight.heroIPosition, fight.heroJPosition - 1);
-                        break;
-                    case ConsoleKey.A:
-                        if (fight.Attack(_hero, _unit, fight.heroIPosition, fight.heroJPosition))
-                        {
-                            _unit.HP -= _hero.Damage;
-                            Console.Beep();
-                        }
-                        break;
-                    case ConsoleKey.R:
-                        if (fight.RangeAttack(_hero, _unit, fight.heroIPosition, fight.heroJPosition))
-                        {
-                            _unit.HP -= _hero.RangeDamage;
-                            Console.Beep();
-                        }
+                    Console.Clear();
+                    Console.Write(fight.FightMap(_hero, _unit));
 
-                        break;
-                    default:
-                        break;
+                    keyInfo = Console.ReadKey(true).Key;
+                    fight.WhatToDO(_hero, _unit, fight.heroIPosition, fight.heroJPosition, keyInfo);
+                }
+
+                while (_unit.Energy > 0 && _hero.HealthPoints >= 0 && _unit.HealthPoints >= 0)
+                {
+                    if (_unit is ComputerUnit)
+                    {
+                        Console.Clear();
+                        Console.Write(fight.FightMap(_hero, _unit));
+
+                        ComputerUnit computerUnit = _unit as ComputerUnit;
+
+                        //TODO: add timer
+                        Console.ReadKey();
+                        keyInfo = computerUnit.MakeMove(fight.battlefield, fight.unitIPosition, fight.unitJPosition,
+                            fight.heroIPosition, fight.heroJPosition);
+                        fight.WhatToDO(computerUnit, _hero, fight.unitIPosition, fight.unitJPosition, keyInfo);
+
+
+                    }
                 }
             }
 
-            return 0;
+            if (_hero.HealthPoints <= 0)
+            {
+                return -1;
+            }
+            else if (_unit.HealthPoints <= 0)
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
         }
 
-        private void Move(Unit _unit, uint _iPosition, uint _jPosition)
+        private void WhatToDO(Unit _currentUnit, Unit _secondUnit, uint _iPosition, uint _jPosition, ConsoleKey _keyInfo)
+        {
+            switch (_keyInfo)
+            {
+                case ConsoleKey.UpArrow:
+                    if (Move(_currentUnit, _iPosition - 1, _jPosition))
+                    {
+                        _currentUnit.Energy--;
+                    }
+
+                    break;
+                case ConsoleKey.DownArrow:
+                    if (Move(_currentUnit, _iPosition + 1, _jPosition))
+                    {
+                        _currentUnit.Energy--;
+                    }
+
+                    break;
+                case ConsoleKey.RightArrow:
+                    if (Move(_currentUnit, _iPosition, _jPosition + 1))
+                    {
+                        _currentUnit.Energy--;
+                    }
+
+                    break;
+                case ConsoleKey.LeftArrow:
+                    if (Move(_currentUnit, _iPosition, _jPosition - 1))
+                    {
+                        _currentUnit.Energy--;
+                    }
+
+                    break;
+                case ConsoleKey.A:
+                    if (Attack(_currentUnit, _secondUnit, _iPosition, _jPosition))
+                    {
+                        _secondUnit.HealthPoints -= _currentUnit.Damage;
+                        _currentUnit.Energy--;
+                        Console.Beep();
+                    }
+
+                    break;
+                case ConsoleKey.R:
+                    if (RangeAttack(_currentUnit, _secondUnit, _iPosition, _jPosition) && _currentUnit is IRanger)
+                    {
+                        IRanger ranger = _currentUnit as IRanger;
+                        _secondUnit.HealthPoints -= ranger.RangeDamage;
+                        _currentUnit.Energy--;
+                        Console.Beep();
+                    }
+
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private bool Move(Unit _unit, uint _iPosition, uint _jPosition)
         {
             if (_iPosition >= battlefieldHeight || _jPosition >= battlefieldWidth ||
                 battlefield[_iPosition, _jPosition] != GameObject.EmptySpace) 
             {
-                return;
+                return false;
             }
 
             if (_unit is Hero)
@@ -101,26 +165,29 @@ namespace Game.Gameplay
                 unitJPosition = _jPosition;
                 battlefield[unitIPosition, unitJPosition] = _unit.UnitIcon;
             }
+
+            return true;
         }
-        
 
-        private string FightMap
+
+        private string FightMap(Hero _hero, Unit _unit)
         {
-            get
-            {
-                string map = "";
+            string map = "";
 
-                for (var i = 0; i < battlefieldHeight; i++)
+            for (var i = 0; i < battlefieldHeight; i++)
+            {
+                for (var j = 0; j < battlefieldWidth; j++)
                 {
-                    for (var j = 0; j < battlefieldWidth; j++)
-                    {
-                        map += (char)battlefield[i, j];
-                    }
-                    map += "\n";
+                    map += (char) battlefield[i, j];
                 }
 
-                return map;
+                map += "\n";
             }
+
+            map += $"Hero:{_hero.HealthPoints} - Enemy: {_unit.HealthPoints}\n";
+            map += $"   -{_hero.Energy}-       -{_unit.Energy}-\n";
+
+            return map;
         }
 
         private bool Attack(Unit _unit, Unit _attackedUnit, uint _iPosition, uint _jPosition)
@@ -130,7 +197,6 @@ namespace Game.Gameplay
                 battlefield[_iPosition, _jPosition + 1] == _attackedUnit.UnitIcon ||
                 battlefield[_iPosition, _jPosition - 1] == _attackedUnit.UnitIcon)
             {
-                _attackedUnit.HP -= _unit.Damage;
                 return true;
             }
             return false;
@@ -138,10 +204,20 @@ namespace Game.Gameplay
 
         private bool RangeAttack(Unit _unit, Unit _attackedUnit, uint _iPosition, uint _jPosition)
         {
-            var leftIPosition = ((_iPosition - _unit.ShootingRange) < 0) ? 0 : _iPosition - _unit.ShootingRange;
-            var rightIPosition = ((_iPosition + _unit.ShootingRange) >= battlefieldHeight) ? battlefieldHeight : _iPosition + _unit.ShootingRange;
-            var leftJPosition = ((_jPosition - _unit.ShootingRange) < 0) ? 0 : _jPosition - _unit.ShootingRange;
-            var rightJPosition = ((_jPosition + _unit.ShootingRange) >= battlefieldWidth) ? battlefieldWidth : _jPosition + _unit.ShootingRange;
+            if (!(_unit is IRanger))
+            {
+                return false;
+            }
+
+            var unit = _unit as IRanger;
+            var leftIPosition = ((_iPosition - unit.ShootingRange) < 0) ? 0 : _iPosition - unit.ShootingRange;
+            var rightIPosition = ((_iPosition + unit.ShootingRange) >= battlefieldHeight)
+                ? battlefieldHeight
+                : _iPosition + unit.ShootingRange;
+            var leftJPosition = ((_jPosition - unit.ShootingRange) < 0) ? 0 : _jPosition - unit.ShootingRange;
+            var rightJPosition = ((_jPosition + unit.ShootingRange) >= battlefieldWidth)
+                ? battlefieldWidth
+                : _jPosition + unit.ShootingRange;
 
             for (var i = leftIPosition; i <= rightIPosition; i++)
             {
@@ -158,7 +234,21 @@ namespace Game.Gameplay
 
         }
 
-        private Fight()
+        private bool MagickAttack(Unit _unit, Unit _attackedUnit, uint _unitIPosition, uint _unitJPosition,
+            uint _attackedUnitIPosition, uint _attackedUnitJPosistion)
+        {
+            if (_unit is IMage)
+            {
+                var unit = _unit as IMage;
+
+                return unit.MagickAttack(ref _attackedUnit, ref _unitIPosition, ref _unitJPosition,
+                    ref _attackedUnitIPosition, ref _attackedUnitJPosistion);
+            }
+
+            return false;
+        }
+
+        private Fight(Hero _hero, Unit _unit)
         {
             var random = new Random(); 
 
@@ -184,8 +274,8 @@ namespace Game.Gameplay
                 }
             }
 
-            battlefield[heroIPosition, heroJPosition] = GameObject.Hero;
-            battlefield[unitIPosition, unitJPosition] = GameObject.Exit;
+            battlefield[heroIPosition, heroJPosition] = _hero.UnitIcon;
+            battlefield[unitIPosition, unitJPosition] = _unit.UnitIcon;
         }
     }
 }

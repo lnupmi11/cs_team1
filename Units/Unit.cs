@@ -7,17 +7,17 @@ namespace Game.Units
         public GameObject UnitIcon { get; protected set; }
 
         public int Damage { get; protected set; }
-        public int RangeDamage { get; protected set; }
-        public int ShootingRange { get; protected set; }
-        public int HP { get; set; }
+
+        public int HealthPoints { get; set; }
+
+        public int Energy { get; set; }
 
         public Unit()
         {
-            this.UnitIcon = GameObject.Exit;
-            this.HP = 5;
+            this.UnitIcon = GameObject.Enemy;
+            this.HealthPoints = 5;
             this.Damage = 2;
-            this.RangeDamage = 1;
-            this.ShootingRange = 2;
+            this.Energy = 2;
         }
     }
 }

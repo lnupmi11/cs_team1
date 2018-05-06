@@ -208,26 +208,34 @@ namespace Game.Maps
         /// <summary>
         /// Method that shows the map
         /// </summary>
-        public void PrintMap()
+        public string GameMap
         {
-            if (map != null)
+            get
             {
-                var visibleArea = 10;
-                for (var i = heroIPosition - visibleArea; i <= heroIPosition + visibleArea; i++)
+                var gameMap = "";
+
+                if (map != null)
                 {
-                    for (var j = heroJPosition - visibleArea; j <= heroJPosition + visibleArea; j++)
+                    var visibleArea = 10;
+                    for (var i = heroIPosition - visibleArea; i <= heroIPosition + visibleArea; i++)
                     {
-                        if (i < 0 || i >= height || j < 0 || j >= width)
+                        for (var j = heroJPosition - visibleArea; j <= heroJPosition + visibleArea; j++)
                         {
-                            Console.Write((char) GameObject.EmptySpace);
+                            if (i < 0 || i >= height || j < 0 || j >= width)
+                            {
+                                gameMap += (char) GameObject.EmptySpace;
+                            }
+                            else
+                            {
+                                gameMap += (char) map[i, j];
+                            }
                         }
-                        else
-                        {
-                            Console.Write((char)map[i, j]);
-                        }
+
+                        gameMap += "\n";
                     }
-                    Console.WriteLine();
                 }
+
+                return gameMap;
             }
         }
     }

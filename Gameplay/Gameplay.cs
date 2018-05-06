@@ -15,11 +15,11 @@ namespace Game.Gameplay
             Console.SetWindowSize(22, 22);
             Console.SetBufferSize(22, 22);
 
-            gameMap = new Maze(50, 25);
-            gameMap.RandomFillPercent = 48;
+            //gameMap = new Maze(50, 25);
+            //gameMap.RandomFillPercent = 48;
 
-            ShowMap();
-            //test();
+            //ShowMap();
+            test();
         }
 
         public void ShowMap()
@@ -35,7 +35,7 @@ namespace Game.Gameplay
                 {
                     break;
                 }
-                gameMap.PrintMap();
+                Console.Write(gameMap.GameMap);
 
                 pressedButton = Console.ReadKey(true);
                 switch (pressedButton.Key)
@@ -68,7 +68,8 @@ namespace Game.Gameplay
         public void test()
         {
             Hero hero = new Hero();
-            Unit unit = new Unit();
+            Unit unit = new ComputerUnit();
+            
 
             Fight.StartFight(ref hero, ref unit);
         }
