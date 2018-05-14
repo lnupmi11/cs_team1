@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using System.Timers;
 using Game.Units;
 using Game.Objects;
@@ -60,6 +59,8 @@ namespace Game.Gameplay
                         ComputerUnit computerUnit = _unit as ComputerUnit;
 
                         //TODO: add timer
+                        var timer = new Timer(2000);
+                        timer.Start();
                         Console.ReadKey();
                         keyInfo = computerUnit.MakeMove(fight.battlefield, fight.unitIPosition, fight.unitJPosition,
                             fight.heroIPosition, fight.heroJPosition);
@@ -119,19 +120,25 @@ namespace Game.Gameplay
                 case ConsoleKey.A:
                     if (Attack(_currentUnit, _secondUnit, _iPosition, _jPosition))
                     {
+                        //if (Battle.Process())
+
                         _secondUnit.HealthPoints -= _currentUnit.Damage;
                         _currentUnit.Energy--;
                         Console.Beep();
+
                     }
 
                     break;
                 case ConsoleKey.R:
                     if (RangeAttack(_currentUnit, _secondUnit, _iPosition, _jPosition) && _currentUnit is IRanger)
                     {
+                        //if (Battle.Process())
+
                         IRanger ranger = _currentUnit as IRanger;
                         _secondUnit.HealthPoints -= ranger.RangeDamage;
                         _currentUnit.Energy--;
                         Console.Beep();
+
                     }
 
                     break;

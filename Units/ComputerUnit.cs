@@ -34,7 +34,9 @@ namespace Game.Units
             uint _thisUnitIPosition, uint _thisUnitJPosition,
             uint _unitIPosition, uint _unitJPosition)
         {
-            if (_thisUnitIPosition < _unitIPosition)
+            var random = new Random();
+            int randomDestiantion = random.Next(0, 2);
+            if (_thisUnitIPosition < _unitIPosition && randomDestiantion == 0)
             {
                 if (_battlefield[_thisUnitIPosition + 1, _thisUnitJPosition] != GameObject.Wall)
                 {
@@ -42,12 +44,26 @@ namespace Game.Units
                 }
                 else
                 {
-                    var random = new Random();
-                    return random.Next(0, 2) == 0 ? ConsoleKey.RightArrow : ConsoleKey.LeftArrow;
+                    random = new Random();
+                    var whereToMove = random.Next(0, 2);
+
+                    if (whereToMove == 0 && _battlefield[_thisUnitIPosition, _thisUnitJPosition - 1] != GameObject.Wall)
+                    {
+                        return ConsoleKey.LeftArrow;
+                    }
+                    else if (whereToMove == 1 &&
+                             _battlefield[_thisUnitIPosition, _thisUnitJPosition + 1] != GameObject.Wall)
+                    {
+                        return ConsoleKey.RightArrow;
+                    }
+                    else
+                    {
+                        return ConsoleKey.UpArrow;
+                    }
                 }
             }
 
-            else if (_thisUnitIPosition > _unitIPosition)
+            else if (_thisUnitIPosition > _unitIPosition && randomDestiantion == 0)
             {
                 if (_battlefield[_thisUnitIPosition - 1, _thisUnitJPosition] != GameObject.Wall)
                 {
@@ -55,12 +71,26 @@ namespace Game.Units
                 }
                 else
                 {
-                    var random = new Random();
-                    return random.Next(0, 2) == 0 ? ConsoleKey.RightArrow : ConsoleKey.LeftArrow;
+                    random = new Random();
+                    var whereToMove = random.Next(0, 2);
+
+                    if (whereToMove == 0 && _battlefield[_thisUnitIPosition, _thisUnitJPosition - 1] != GameObject.Wall)
+                    {
+                        return ConsoleKey.LeftArrow;
+                    }
+                    else if (whereToMove == 1 &&
+                             _battlefield[_thisUnitIPosition, _thisUnitJPosition + 1] != GameObject.Wall)
+                    {
+                        return ConsoleKey.RightArrow;
+                    }
+                    else
+                    {
+                        return ConsoleKey.DownArrow;
+                    }
                 }
             }
 
-            else if (_thisUnitJPosition < _unitJPosition)
+            else if (_thisUnitJPosition < _unitJPosition && randomDestiantion == 1)
             {
                 if (_battlefield[_thisUnitIPosition, _thisUnitJPosition + 1] != GameObject.Wall)
                 {
@@ -68,21 +98,47 @@ namespace Game.Units
                 }
                 else
                 {
-                    var random = new Random();
-                    return random.Next(0, 2) == 0 ? ConsoleKey.UpArrow : ConsoleKey.DownArrow;
+                    var whereToMove = random.Next(0, 2);
+
+                    if (whereToMove == 0 && _battlefield[_thisUnitIPosition - 1, _thisUnitJPosition] != GameObject.Wall)
+                    {
+                        return ConsoleKey.UpArrow;
+                    }
+                    else if (whereToMove == 1 &&
+                             _battlefield[_thisUnitIPosition + 1, _thisUnitJPosition] != GameObject.Wall)
+                    {
+                        return ConsoleKey.DownArrow;
+                    }
+                    else
+                    {
+                        return ConsoleKey.LeftArrow;
+                    }
                 }
             }
 
-            else if (_thisUnitJPosition > _unitJPosition)
+            else if (_thisUnitJPosition > _unitJPosition && randomDestiantion == 1)
             {
-                if (_battlefield[_thisUnitIPosition, _thisUnitJPosition] != GameObject.Wall)
+                if (_battlefield[_thisUnitIPosition, _thisUnitJPosition - 1] != GameObject.Wall)
                 {
                     return ConsoleKey.LeftArrow;
                 }
                 else
                 {
-                    var random = new Random();
-                    return random.Next(0, 2) == 0 ? ConsoleKey.RightArrow : ConsoleKey.LeftArrow;
+                    var whereToMove = random.Next(0, 2);
+
+                    if (whereToMove == 0 && _battlefield[_thisUnitIPosition - 1, _thisUnitJPosition] != GameObject.Wall)
+                    {
+                        return ConsoleKey.UpArrow;
+                    }
+                    else if (whereToMove == 1 &&
+                             _battlefield[_thisUnitIPosition + 1, _thisUnitJPosition] != GameObject.Wall)
+                    {
+                        return ConsoleKey.DownArrow;
+                    }
+                    else
+                    {
+                        return ConsoleKey.RightArrow;
+                    }
                 }
             }
 

@@ -1,5 +1,7 @@
 ﻿using System;
+using Game.Gameplay;
 using Game.Objects;
+using Game.Units;
 
 namespace Game.Maps
 {
@@ -73,6 +75,25 @@ namespace Game.Maps
         /// Method that fills the map with GameObjects.
         /// </summary>
         protected abstract void FillMap();
+
+        protected virtual void SpawnEnemies()
+        {
+            var chanceToSpawn = new Random();
+
+            for (int i = 0; i < height; i++)
+            {
+                for (int j = 0; j < width; j++)
+                {
+                    if (map[i, j] == GameObject.EmptySpace)
+                    {
+                        if (chanceToSpawn.Next(0, 21) <= 5)
+                        {
+                            map[i, j] = GameObject.Enemy;
+                        }
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// Method that sets the hero position.
@@ -179,7 +200,7 @@ namespace Game.Maps
         /// </summary>
         /// <param name="_heroIPosition"></param>
         /// <param name="_heroJPosition"></param>
-        public virtual int MoveHero(uint _heroIPosition, uint _heroJPosition)
+        public virtual int MoveHero(ref Hero _hero, uint _heroIPosition, uint _heroJPosition)
         {
             if (_heroIPosition < height && _heroJPosition < width )
             {
@@ -191,6 +212,16 @@ namespace Game.Maps
                 if (map[_heroIPosition, _heroJPosition] == GameObject.Exit)
                 {
                     return 1;
+                }
+
+                if (map[_heroIPosition, _heroJPosition] == GameObject.Enemy)
+                {
+                    Unit unit = new ComputerUnit();
+                    int fightResult = Fight.StartFight(ref _hero, ref unit);
+                    if (fightResult == -1 || fightResult == 0)
+                    {
+                        return -1;
+                    }
                 }
 
                 map[heroIPosition, heroJPosition] = GameObject.EmptySpace;

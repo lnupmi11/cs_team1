@@ -1,5 +1,6 @@
 ﻿using System;
 using Game.Objects;
+using Game.Units;
 
 namespace Game.Maps
 {
@@ -18,6 +19,11 @@ namespace Game.Maps
 
         private uint minHeight = 5;
         private uint minWidth = 5;
+
+        public Dungeon(uint _height, uint _width)
+        {
+            GenerateMap(_height, _width);
+        }
 
         /// <summary>
         /// Method that set the max width and the height of the map.
@@ -50,6 +56,7 @@ namespace Game.Maps
 
             FillMap();
             SetHero();
+            
         }
 
         /// <summary>
@@ -78,9 +85,9 @@ namespace Game.Maps
         /// <param name="_heroIPosition"></param>
         /// <param name="_heroJPosition"></param>
         /// <returns></returns>
-        public override int MoveHero(uint _heroIPosition, uint _heroJPosition)
+        public override int MoveHero(ref Hero _hero, uint _heroIPosition, uint _heroJPosition)
         {
-            var moveResult = base.MoveHero(_heroIPosition, _heroJPosition);
+            var moveResult = base.MoveHero(ref _hero, _heroIPosition, _heroJPosition);
 
             if (moveResult == 0)
             {
@@ -135,7 +142,7 @@ namespace Game.Maps
         private void SetRoom(uint _iStartPosition, uint _jStartPosition)
         {
             var randomExit = new Random();
-
+            var chanceToSpawn = new Random();
             for (var i = _iStartPosition; i < _iStartPosition + roomSize; i++)
             {
                 for (var j = _jStartPosition; j < _jStartPosition + roomSize; j++)
@@ -160,12 +167,18 @@ namespace Game.Maps
                     }
                     else if (i == _iStartPosition + roomSize / 2 && j == _jStartPosition + roomSize / 2)
                     {
-                        // TODO: random generation
                         map[i, j] = GameObject.Exit;
                     }
                     else
                     {
-                        map[i, j] = GameObject.EmptySpace;
+                        if (chanceToSpawn.Next(0, 21) <= 3)
+                        {
+                            map[i, j] = GameObject.Enemy;
+                        }
+                        else
+                        {
+                            map[i, j] = GameObject.EmptySpace;
+                        }
                     }
                 }
             }

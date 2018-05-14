@@ -8,6 +8,8 @@ namespace Game.Gameplay
     {
         private MapGenerator gameMap;
 
+        private Hero hero = new Hero();
+
         public void StartGame()
         {
             Console.OutputEncoding = System.Text.Encoding.Unicode;
@@ -15,11 +17,10 @@ namespace Game.Gameplay
             Console.SetWindowSize(22, 22);
             Console.SetBufferSize(22, 22);
 
-            //gameMap = new Maze(50, 25);
-            //gameMap.RandomFillPercent = 48;
+            gameMap = new Dungeon(50, 25);
+            gameMap.RandomFillPercent = 48;
 
-            //ShowMap();
-            test();
+            ShowMap();
         }
 
         public void ShowMap()
@@ -41,16 +42,16 @@ namespace Game.Gameplay
                 switch (pressedButton.Key)
                 {
                     case ConsoleKey.UpArrow:
-                        moveResult = gameMap.MoveHero(gameMap.HeroPosition.Item1 - 1, gameMap.HeroPosition.Item2);
+                        moveResult = gameMap.MoveHero(ref hero, gameMap.HeroPosition.Item1 - 1, gameMap.HeroPosition.Item2);
                         break;
                     case ConsoleKey.DownArrow:
-                        moveResult = gameMap.MoveHero(gameMap.HeroPosition.Item1 + 1, gameMap.HeroPosition.Item2);
+                        moveResult = gameMap.MoveHero(ref hero, gameMap.HeroPosition.Item1 + 1, gameMap.HeroPosition.Item2);
                         break;
                     case ConsoleKey.RightArrow:
-                        moveResult = gameMap.MoveHero(gameMap.HeroPosition.Item1, gameMap.HeroPosition.Item2 + 1);
+                        moveResult = gameMap.MoveHero(ref hero, gameMap.HeroPosition.Item1, gameMap.HeroPosition.Item2 + 1);
                         break;
                     case ConsoleKey.LeftArrow:
-                        moveResult = gameMap.MoveHero(gameMap.HeroPosition.Item1, gameMap.HeroPosition.Item2 - 1);
+                        moveResult = gameMap.MoveHero(ref hero, gameMap.HeroPosition.Item1, gameMap.HeroPosition.Item2 - 1);
                         break;
                     default:
                         break;
@@ -60,6 +61,11 @@ namespace Game.Gameplay
                 {
                     gameMap=new Tower();
                     gameMap.GenerateMap(20, 20);
+                }
+
+                if (hero.HealthPoints <= 0)
+                {
+                    return;
                 }
             }
 

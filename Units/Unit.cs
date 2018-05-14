@@ -10,6 +10,8 @@ namespace Game.Units
 
         public int HealthPoints { get; set; }
 
+        public int MaxHealthPoints { get; set; }
+
         public int Energy { get; set; }
 
         public Unit()

@@ -64,6 +64,7 @@ namespace Game.Maps
 
             SetHero();
             SetExit();
+            SpawnEnemies();
         }
 
         /// <summary>
@@ -142,7 +143,7 @@ namespace Game.Maps
         {
             var exits = new bool[4];
 
-            while(CheckExitsExistance(exits))
+            while (exits.Count(i => i) != 4) 
             {
                 int choosedSide = _randomSide.Next(0, 4);
                 if (exits[choosedSide])
@@ -197,25 +198,6 @@ namespace Game.Maps
         {
             map[_iPosition + _iAddition, _jPosition + _jAddition] = GameObject.EmptySpace;
             map[_iPosition + _iAddition + _iAddition, _jPosition + _jAddition + _jAddition] = GameObject.EmptySpace;
-        }
-
-        /// <summary>
-        /// Method that checks if the exit is allready existing.
-        /// </summary>
-        /// <param name="_exits"></param>
-        /// <returns></returns>
-        private bool CheckExitsExistance(bool[] _exits)
-        {
-            var numberOfSides = 0;
-            foreach (var exit in _exits)
-            {
-                if(exit== true)
-                {
-                    numberOfSides++;
-                }
-            }
-
-            return numberOfSides != 4;
         }
     }
 }

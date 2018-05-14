@@ -41,6 +41,7 @@ namespace Game.Maps
             var iPosition = 0;
             var jPosition = 0;
             var randomObject = new Random(Seed);
+            var chanceToSpawn = new Random();
 
             for (double i = radius; i >= -radius; --i)
             {
@@ -53,8 +54,16 @@ namespace Game.Maps
                     }
                     else if (value < radiusIn * radiusIn && value < radiusOut * radiusOut)
                     {
-                        map[iPosition, jPosition] = (randomObject.Next(0, 100) < RandomFillPercent) ?
-                                            GameObject.Wall : GameObject.EmptySpace;
+                        if (chanceToSpawn.Next(0, 21) < 3)
+                        {
+                            map[iPosition, jPosition] = GameObject.Enemy;
+                        }
+                        else
+                        {
+                            map[iPosition, jPosition] = (randomObject.Next(0, 100) < RandomFillPercent)
+                                ? GameObject.Wall
+                                : GameObject.EmptySpace;
+                        }
                     }
                     else
                     {

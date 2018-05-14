@@ -27,6 +27,7 @@ namespace Game.Maps
 
             SetHero();
             SetExit();
+            SpawnEnemies();
         }
 
         /// <summary>

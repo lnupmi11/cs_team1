@@ -8,6 +8,7 @@ namespace Game.Units
         public int ShootingRange { get; protected set; }
 
         public uint ManaPoints { get; set; }
+        public uint MaxManaPoints { get; set; }
 
         public Hero()
         {
