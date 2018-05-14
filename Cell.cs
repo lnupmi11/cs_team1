@@ -16,6 +16,8 @@ namespace LabyFights
         private bool visited;
         private bool exit = false;
         private Player player = null;
+        private bool fighter = false;
+        private Opponent opponent = null;
 
         public Cell()
         {
@@ -130,6 +132,33 @@ namespace LabyFights
                 player = value;
             }
         }
+
+        public bool Fighter
+        {
+            get
+            {
+                return fighter;
+            }
+
+            set
+            {
+                fighter = value;
+            }
+        }
+
+        public Opponent Opponent
+        {
+            get
+            {
+                return opponent;
+            }
+            
+            set
+            {
+                opponent = value;
+            }
+        }
+
         #endregion
     }
 }

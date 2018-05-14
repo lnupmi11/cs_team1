@@ -69,25 +69,8 @@ namespace LabyFights
             Dig(0, 0, new Stack<Tuple<int, int>>());
             DigExit();
             DigPlayer();
+            InitOpponent();
         }
-
-        //public Maze(int width, int height, Random rdm,Tuple<int,int> ex,Tuple<int,int> pl, int damag)
-        //{
-        //    this.width = width;
-        //    this.height = height;
-        //    this.myMaze = new Cell[height, width];
-        //    this.rdm = rdm;
-        //    for (int row = 0; row < height; row++)
-        //    {
-        //        for (int col = 0; col < width; col++)
-        //        {
-        //            this.myMaze[row, col] = new Cell();
-        //        }
-        //    }
-        //    Dig(0, 0, new Stack<Tuple<int, int>>());
-        //    DigExit(ex.Item1, ex.Item2);
-        //    DigPlayer(pl.Item1, pl.Item2, damag);
-        //}
 
         private Tuple<int, int> SelectNeighbour(int row, int col)
         {
@@ -147,6 +130,22 @@ namespace LabyFights
             }
         }
 
+        private void InitOpponent()
+        {
+            Random random = new Random();
+            int nbCellRequired = Convert.ToInt32((this.width * this.height) * 0.1);
+            while (nbCellRequired > 0)
+            {
+                int row = random.Next(this.height);
+                int col = random.Next(this.width);
+                if (this.myMaze[row, col].Opponent == null && !this.myMaze[row, col].Exit)
+                {
+                    myMaze[row, col].Opponent = new Opponent(random.Next(1, 11));
+                    nbCellRequired -= 1;
+                }
+            }
+        }
+
         private void Dig(int row, int col, Stack<Tuple<int, int>> stack)
         {
 
@@ -177,14 +176,6 @@ namespace LabyFights
             this.exit = Tuple.Create(row, col);
         }
 
-        //private void DigExit(int x,int y)
-        //{
-        //    int row = x;
-        //    int col = y;
-        //    myMaze[row, col].Exit = true;
-        //    this.exit = Tuple.Create(row, col);
-        //}
-
         private void DigPlayer()
         {
             int row, col;
@@ -193,12 +184,6 @@ namespace LabyFights
             myMaze[row, col].Player = new Player(100);
             this.player = Tuple.Create(row, col);
         }
-
-        //private void DigPlayer(int row,int col,int damag)
-        //{
-        //    myMaze[row, col].Player = new Player(damag);
-        //    this.player = Tuple.Create(row, col);
-        //}
 
         public void printCell(int row, int col)
         {
@@ -234,13 +219,19 @@ namespace LabyFights
             {
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.SetCursorPosition((col * 4) + 2, (row * 4) + 2);
-                Console.Write("*");
+                Console.Write("▬");
             }
             if(this.myMaze[row,col].Player != null)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.SetCursorPosition((col * 4) + 2, (row * 4) + 2);
-                Console.Write("@");
+                Console.Write("&");
+            }
+            if (this.myMaze[row, col].Opponent != null)
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.SetCursorPosition((col * 4) + 2, (row * 4) + 2);
+                Console.Write(this.myMaze[row, col].Opponent.Damage);
             }
         }
     }
