@@ -234,5 +234,21 @@ namespace LabyFights
                 Console.Write(this.myMaze[row, col].Opponent.Damage);
             }
         }
+
+        public void PlaceOpponents(List<Opponent> weapons)
+        {
+            Random random = new Random();
+            while (weapons.Count > 0)
+            {
+                int row = random.Next(this.height);
+                int col = random.Next(this.width);
+                if (this.myMaze[row, col].Opponent == null && !this.myMaze[row, col].Exit && !this.myMaze[row, col].Fighter)
+                {
+                    myMaze[row, col].Opponent = weapons[0];
+                    weapons.Remove(weapons[0]);
+                    printCell(row, col);
+                }
+            }
+        }
     }
 }
