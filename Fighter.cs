@@ -34,7 +34,6 @@ namespace LabyFights
             maze.Player = Tuple.Create(currentRow, currentCol);
             coordinat = maze.Player;
             maze.MyMaze[coordinat.Item1, coordinat.Item2].Player = new Player(currentLife);
-            Thread.Sleep(1000);
             Console.Clear();
             for (int i = 0; i < maze.MyMaze.GetLength(0); i++)
             {
@@ -43,7 +42,6 @@ namespace LabyFights
                     maze.printCell(i, j);
                 }
             }
-            Thread.Sleep(2000);
         }
 
     }

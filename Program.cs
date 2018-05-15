@@ -1,17 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LabyFights;
-using System.Threading;
-using System.Diagnostics;
-using System.IO;
 
 namespace ConsoleApplication1
 {
     class Program
     {
+        static bool TryGo(Tuple<int,int> coordinat, Maze myMaze)
+        {
+            if (myMaze.MyMaze[coordinat.Item1, coordinat.Item2].Exit)
+            {
+                Console.Clear();
+                Console.WriteLine("You win");
+                Console.ReadKey();
+                Environment.Exit(0);
+            }
+            if (myMaze.MyMaze[coordinat.Item1, coordinat.Item2].Opponent != null)
+            {
+                //TODO
+                myMaze.MyMaze[coordinat.Item1, coordinat.Item2].Opponent = null;
+                return true;
+            }
+            return true;
+        }
+
         static void Main(string[] args)
         {
             Console.CursorVisible = false;
@@ -34,19 +46,87 @@ namespace ConsoleApplication1
                 ConsoleKeyInfo key = Console.ReadKey();
                 if(key.Key == ConsoleKey.W)
                 {
-                    
+                    var coordinat = Tuple.Create(myMaze.Player.Item1 - 1, myMaze.Player.Item2);
+                    if (!myMaze.MyMaze[coordinat.Item1 + 1, coordinat.Item2].N_wall && TryGo(coordinat, myMaze))
+                    {
+                        Fighter fighter = new Fighter(myMaze, coordinat.Item1, coordinat.Item2);
+                    }
+                    else
+                    {
+                        Console.Clear();
+                        Console.WriteLine("Your move is incorrect");
+                        Console.ReadKey();
+                        for (int i = 0; i < myMaze.MyMaze.GetLength(0); i++)
+                        {
+                            for (int j = 0; j < myMaze.MyMaze.GetLength(1); j++)
+                            {
+                                myMaze.printCell(i, j);
+                            }
+                        }
+                    }
                 }
                 else if(key.Key == ConsoleKey.A)
                 {
-
+                    var coordinat = Tuple.Create(myMaze.Player.Item1, myMaze.Player.Item2 - 1);
+                    if (!myMaze.MyMaze[coordinat.Item1, coordinat.Item2 + 1].W_wall && TryGo(coordinat, myMaze))
+                    {
+                        Fighter fighter = new Fighter(myMaze, coordinat.Item1, coordinat.Item2);
+                    }
+                    else
+                    {
+                        Console.Clear();
+                        Console.WriteLine("Your move is incorrect");
+                        Console.ReadKey();
+                        for (int i = 0; i < myMaze.MyMaze.GetLength(0); i++)
+                        {
+                            for (int j = 0; j < myMaze.MyMaze.GetLength(1); j++)
+                            {
+                                myMaze.printCell(i, j);
+                            }
+                        }
+                    }
                 }
                 else if(key.Key == ConsoleKey.D)
                 {
-
+                    var coordinat = Tuple.Create(myMaze.Player.Item1, myMaze.Player.Item2 + 1);
+                    if (!myMaze.MyMaze[coordinat.Item1, coordinat.Item2 - 1].E_wall && TryGo(coordinat, myMaze))
+                    {
+                        Fighter fighter = new Fighter(myMaze, coordinat.Item1, coordinat.Item2);
+                    }
+                    else
+                    {
+                        Console.Clear();
+                        Console.WriteLine("Your move is incorrect");
+                        Console.ReadKey();
+                        for (int i = 0; i < myMaze.MyMaze.GetLength(0); i++)
+                        {
+                            for (int j = 0; j < myMaze.MyMaze.GetLength(1); j++)
+                            {
+                                myMaze.printCell(i, j);
+                            }
+                        }
+                    }
                 }
                 else if(key.Key == ConsoleKey.S)
                 {
-
+                    var coordinat = Tuple.Create(myMaze.Player.Item1 + 1, myMaze.Player.Item2);
+                    if (!myMaze.MyMaze[coordinat.Item1 - 1, coordinat.Item2].S_wall && TryGo(coordinat, myMaze))
+                    {
+                        Fighter fighter = new Fighter(myMaze, coordinat.Item1, coordinat.Item2);
+                    }
+                    else
+                    {
+                        Console.Clear();
+                        Console.WriteLine("Your move is incorrect");
+                        Console.ReadKey();
+                        for (int i = 0; i < myMaze.MyMaze.GetLength(0); i++)
+                        {
+                            for (int j = 0; j < myMaze.MyMaze.GetLength(1); j++)
+                            {
+                                myMaze.printCell(i, j);
+                            }
+                        }
+                    }
                 }
                 else
                 {
@@ -62,9 +142,6 @@ namespace ConsoleApplication1
                     }
                 }
             }
-            Thread.Sleep(2000);
-            Fighter fighter = new Fighter(myMaze, 1, 1);
-            Console.ReadKey();
         }
     }
 }
