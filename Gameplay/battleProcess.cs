@@ -23,13 +23,12 @@ namespace ConsoleApp1
         private static Timer mapdrowTimer;
         private static Timer enemyActionTimer;
         private static ConsoleKeyInfo keyInfo;
-        private const char emptyCell = ' ';
         private static Random rand = new Random();
-        private static Thread rend = new Thread(render);
         private static int act;
-        private static Thread enemy = new Thread(EnemyAction);
+        
         private const int N = 15;
         private const int M = 30;// map size
+        private const char emptyCell = ' ';
 
         public Battle()
         {
@@ -40,8 +39,6 @@ namespace ConsoleApp1
             yourPosition = M / 2;
             enemyPosition = M / 2;
             map = generateBattleMap();
-            yourHealth = 3;
-            enemyHealth = 3;
         }
         
         
@@ -76,9 +73,7 @@ namespace ConsoleApp1
         }
         
         private static void render()
-        {
-            while (gameProcess)
-            {
+        {  
                 Console.Clear();
                 for (int i = 0; i < map.GetLength(0); i++)
                 {
@@ -89,8 +84,8 @@ namespace ConsoleApp1
                 }
                 Console.WriteLine("YOUR HEALTH:" + yourHealth);
                 Console.WriteLine("ENEMY HEALTH:" + enemyHealth);
-                System.Threading.Thread.Sleep(200);
-            }
+                //System.Threading.Thread.Sleep(300);
+            
         }
          
         private static bool endGame()
@@ -98,10 +93,8 @@ namespace ConsoleApp1
             if (yourHealth == 0)
             {
                 Console.Clear();
-                //enemyActionTimer.Dispose();
-                //mapdrowTimer.Dispose();
-                rend.Abort();
-                enemy.Abort();
+                enemyActionTimer.Dispose();
+                mapdrowTimer.Dispose();
                 Console.WriteLine("       YOU LOSE        ");
                 PlaySound();
                 gameProcess = false;
@@ -110,10 +103,8 @@ namespace ConsoleApp1
             else if (enemyHealth == 0)
             {
                 Console.Clear();
-                rend.Abort();
-                enemy.Abort();
-                //enemyActionTimer.Dispose();
-                //mapdrowTimer.Dispose();
+                enemyActionTimer.Dispose();
+                mapdrowTimer.Dispose();
                 Console.WriteLine("         YOU WIN         ");
                 PlaySound();
                 gameProcess = false;
@@ -121,23 +112,24 @@ namespace ConsoleApp1
             }
             else return true;
         }
-        public static void process()
+        public static void process(int yHealth,int eHealth)
         {
             Console.Title = "BATTLE";
             Console.ForegroundColor = ConsoleColor.Green;
             Battle btl = new Battle();
+            yourHealth = yHealth;
+            enemyHealth = eHealth;
             render();
-            rend.Start();
-            enemy.Start();
-            while (endGame())
+            
+            do
             {
-                rend.Join();
-                enemy.Join();
-                //mapdrowTimer = new Timer(TimerMapDrowing, null, 0, 3000);
-                //enemyActionTimer = new Timer(TimerEnemyAction, null, 0, 3000);
+                mapdrowTimer = new Timer(TimerMapDrowing, null, 0, 2000);
+                enemyActionTimer = new Timer(TimerEnemyAction, null, 0, 6000);
                 keyInfo = Console.ReadKey();
                 action(keyInfo);
-            }
+            } while (endGame());
+            
+
         }
         private static void action(ConsoleKeyInfo keyInfo)
         {
@@ -164,12 +156,13 @@ namespace ConsoleApp1
                     map[i, shootPosition] = shoot;
                 }
                 render();
-                System.Threading.Thread.Sleep(200);
+                System.Threading.Thread.Sleep(100);
                 if (shootPosition == enemyPosition)
                 {
                     Console.Beep(1000, 300);
                     enemyHealth--;
-                    System.Threading.Thread.Sleep(200);
+                    //System.Threading.Thread.Sleep(100);
+                    
                 }
                 
                 
@@ -183,8 +176,6 @@ namespace ConsoleApp1
         }
          private static void EnemyAction()
         {
-            while (gameProcess)
-            {
                 act = rand.Next(1, 4);
                 if (act == 1 && enemyPosition > 1)
                 {
@@ -195,7 +186,7 @@ namespace ConsoleApp1
                 }
                 else if (act == 2 && enemyPosition < M - 2)
                 {
-                    System.Threading.Thread.Sleep(150);
+                    System.Threading.Thread.Sleep(200);
                     map[1, enemyPosition] = emptyCell;
                     enemyPosition++;
                     map[1, enemyPosition] = enemyChar;
@@ -204,28 +195,28 @@ namespace ConsoleApp1
                 {
                     Console.Beep();
                     enemyshootPosition = enemyPosition;
-                    for (int i = 2; i < N - 1; i++)
+                    for (int i = 2; i < N-1; i++)
                     {
                         map[i, enemyshootPosition] = shoot;
                     }
+
                     render();
-                    System.Threading.Thread.Sleep(200);
+                    //System.Threading.Thread.Sleep(100);
                     if (enemyshootPosition == yourPosition)
                     {
                         Console.Beep(1000, 300);
                         yourHealth--;
-                        System.Threading.Thread.Sleep(400);
+                        System.Threading.Thread.Sleep(200);
                     }
-
-
                     for (int i = 2; i < N - 1; i++)
                     {
                         map[i, enemyshootPosition] = emptyCell;
                     }
-                    System.Threading.Thread.Sleep(100);
 
+                    //System.Threading.Thread.Sleep(100);
                 }
-            }
+
+            
         }
         private static void PlaySound()
         {
@@ -260,13 +251,11 @@ namespace ConsoleApp1
 
         private static void TimerEnemyAction(Object o)
         {
-            int randomAction = rand.Next(1, 4);
-            //EnemyAction(randomAction);
+            EnemyAction();
         }
-        static void Main(string[] args)
-        {
-            process();
-        }
+
+
+        
 
         
     }
