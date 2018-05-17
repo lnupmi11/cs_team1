@@ -47,7 +47,7 @@ namespace ConsoleApplication1
             Menu.FirstMenu();
             stream = Console.ReadLine();
             bool check = Int32.TryParse(stream, out choice);
-            while(check != true)
+            while(check != true || choice > 3 || choice < 1)
             {
                 Console.Clear();
                 Menu.FirstMenu();
@@ -70,8 +70,30 @@ namespace ConsoleApplication1
                     Play.NewGame();
                     break;
                 case 2:
+                    Console.Clear();
+                    Console.WriteLine("\t\t\t\t\t\t Hello\nIt`s little guide how play this game\n\n" +
+                        "Game have two parts: first it`s labyrinth and u have to find exit; second fight with your enemy\n\n" +
+                        "*Labyrinth: You have four moves\n" +
+                        "W - UP\n" +
+                        "S - DOWN\n" +
+                        "A - LEFT\n" +
+                        "D - RIGHT\n" +
+                        "Your position represent by &\n" +
+                        "Numbers - it`s your enemy , and number represent how many hp ur oponent have\n\n" +
+                        "*Fight with enemy: You have there moves\n" +
+                        "<- - LEFT\n" +
+                        "-> - RIGHT\n" +
+                        "SPACE - FIRE\n" +
+                        "Your goal it`s kill enemy as many times as he has health and back to labyrinth");
+                    Console.ReadKey();
                     break;
-            }            
+
+                case 3:
+                    break;
+
+                default:
+                    break;
+            }   
         }
     }
 }
