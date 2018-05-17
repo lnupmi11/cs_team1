@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GameBattle;
+using ConsoleApplication1;
 
 namespace LabyFights
 {
@@ -17,6 +18,7 @@ namespace LabyFights
                 Console.WriteLine("You win");
                 System.Threading.Thread.Sleep(5000);
                 Environment.Exit(0);
+                string name = StaticFields.name;
             }
             if (myMaze.MyMaze[coordinat.Item1, coordinat.Item2].Opponent != null)
             {
@@ -66,7 +68,7 @@ namespace LabyFights
                     {
                         Console.Clear();
                         Console.WriteLine("Your move is incorrect");
-                        System.Threading.Thread.Sleep(2000);
+                        System.Threading.Thread.Sleep(500);
                         for (int i = 0; i < myMaze.MyMaze.GetLength(0); i++)
                         {
                             for (int j = 0; j < myMaze.MyMaze.GetLength(1); j++)
@@ -87,7 +89,7 @@ namespace LabyFights
                     {
                         Console.Clear();
                         Console.WriteLine("Your move is incorrect");
-                        System.Threading.Thread.Sleep(2000);
+                        System.Threading.Thread.Sleep(500);
                         for (int i = 0; i < myMaze.MyMaze.GetLength(0); i++)
                         {
                             for (int j = 0; j < myMaze.MyMaze.GetLength(1); j++)
@@ -108,7 +110,7 @@ namespace LabyFights
                     {
                         Console.Clear();
                         Console.WriteLine("Your move is incorrect");
-                        System.Threading.Thread.Sleep(2000);
+                        System.Threading.Thread.Sleep(500);
                         for (int i = 0; i < myMaze.MyMaze.GetLength(0); i++)
                         {
                             for (int j = 0; j < myMaze.MyMaze.GetLength(1); j++)
@@ -129,7 +131,7 @@ namespace LabyFights
                     {
                         Console.Clear();
                         Console.WriteLine("Your move is incorrect");
-                        System.Threading.Thread.Sleep(2000);
+                        System.Threading.Thread.Sleep(500);
                         for (int i = 0; i < myMaze.MyMaze.GetLength(0); i++)
                         {
                             for (int j = 0; j < myMaze.MyMaze.GetLength(1); j++)
@@ -144,13 +146,13 @@ namespace LabyFights
                     if(myMaze.MyMaze[myMaze.Player.Item1, myMaze.Player.Item2].Player.Damage == 0)
                     {
                         Console.Clear();
-                        Console.WriteLine("Your lose");
+                        Console.WriteLine("You lose");
                         System.Threading.Thread.Sleep(5000);
                         Environment.Exit(0);
                     }
                     Console.Clear();
                     Console.WriteLine("Your move is incorrect");
-                    System.Threading.Thread.Sleep(2000);
+                    System.Threading.Thread.Sleep(500);
                     for (int i = 0; i < myMaze.MyMaze.GetLength(0); i++)
                     {
                         for (int j = 0; j < myMaze.MyMaze.GetLength(1); j++)
