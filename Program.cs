@@ -19,17 +19,23 @@ namespace ConsoleApplication1
             Console.WriteLine("3) Exit");
         }
 
-        public static void SecondMenu()
+        public static void NameMenu()
         {
             Console.Clear();
             Console.WriteLine("Enter your name:");
             StaticFields.name = Console.ReadLine();
+        }
+
+        public static void ComplexityMenu()
+        {
             Console.Clear();
             Console.WriteLine("Enter your complexity:");
-            string stream = Console.ReadLine();
-            bool check = Int32.TryParse(stream, out StaticFields.complexity);
-
+            Console.WriteLine("1) Easy");
+            Console.WriteLine("2) Medium");
+            Console.WriteLine("3) Hard");
         }
+
+
     }
 
     class Program
@@ -51,12 +57,21 @@ namespace ConsoleApplication1
             switch (choice)
             {
                 case 1:
-                    Menu.SecondMenu();
+                    Menu.NameMenu();
+                    Menu.ComplexityMenu();
+                    stream = Console.ReadLine();
+                    check = Int32.TryParse(stream, out StaticFields.complexity);
+                    while (check != true || StaticFields.complexity > 3 || StaticFields.complexity < 1)
+                    {
+                        Menu.ComplexityMenu();
+                        stream = Console.ReadLine();
+                        check = Int32.TryParse(stream, out StaticFields.complexity);
+                    }
+                    Play.NewGame();
                     break;
-            }
-            
-            Console.WriteLine("New game");
-            Play.NewGame();
+                case 2:
+                    break;
+            }            
         }
     }
 }
