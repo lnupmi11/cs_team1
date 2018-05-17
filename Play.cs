@@ -52,7 +52,6 @@ namespace LabyFights
                     width = 10;
                     height = 5;
                     break;
-
                 case 2:
                     width = 20;
                     height = 10;
@@ -85,34 +84,42 @@ namespace LabyFights
                     case ConsoleKey.W:
                     case ConsoleKey.UpArrow:
                         coordinate = Tuple.Create(myMaze.Player.Item1 - 1, myMaze.Player.Item2);
-                        if (!myMaze.MyMaze[coordinate.Item1 + 1, coordinate.Item2].N_wall && TryGo(coordinate,ref myMaze))
+                        if (!myMaze.MyMaze[coordinate.Item1 + 1, coordinate.Item2].N_wall &&
+                            TryGo(coordinate, ref myMaze))
                         {
                             Fighter fighter = new Fighter(myMaze, coordinate.Item1, coordinate.Item2);
                         }
+
                         break;
                     case ConsoleKey.A:
                     case ConsoleKey.LeftArrow:
                         coordinate = Tuple.Create(myMaze.Player.Item1, myMaze.Player.Item2 - 1);
-                        if (!myMaze.MyMaze[coordinate.Item1, coordinate.Item2 + 1].W_wall && TryGo(coordinate,ref myMaze))
+                        if (!myMaze.MyMaze[coordinate.Item1, coordinate.Item2 + 1].W_wall &&
+                            TryGo(coordinate, ref myMaze))
                         {
                             Fighter fighter = new Fighter(myMaze, coordinate.Item1, coordinate.Item2);
                         }
+
                         break;
                     case ConsoleKey.D:
                     case ConsoleKey.RightArrow:
                         coordinate = Tuple.Create(myMaze.Player.Item1, myMaze.Player.Item2 + 1);
-                        if (!myMaze.MyMaze[coordinate.Item1, coordinate.Item2 - 1].E_wall && TryGo(coordinate,ref myMaze))
+                        if (!myMaze.MyMaze[coordinate.Item1, coordinate.Item2 - 1].E_wall &&
+                            TryGo(coordinate, ref myMaze))
                         {
                             Fighter fighter = new Fighter(myMaze, coordinate.Item1, coordinate.Item2);
                         }
+
                         break;
                     case ConsoleKey.S:
                     case ConsoleKey.DownArrow:
                         coordinate = Tuple.Create(myMaze.Player.Item1 + 1, myMaze.Player.Item2);
-                        if (!myMaze.MyMaze[coordinate.Item1 - 1, coordinate.Item2].S_wall && TryGo(coordinate,ref myMaze))
+                        if (!myMaze.MyMaze[coordinate.Item1 - 1, coordinate.Item2].S_wall &&
+                            TryGo(coordinate, ref myMaze))
                         {
                             Fighter fighter = new Fighter(myMaze, coordinate.Item1, coordinate.Item2);
                         }
+
                         break;
                     case ConsoleKey.Escape:
                         Environment.Exit(0);

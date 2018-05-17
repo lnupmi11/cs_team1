@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using ConsoleApplication1;
 
 namespace GameBattle
 {
     public class Battle
-    { 
+    {
         private static char[,] map;
         private static int yourHealth;
         private static int enemyHealth;
@@ -25,7 +26,7 @@ namespace GameBattle
         private static ConsoleKeyInfo keyInfo;
         private static Random rand = new Random();
         private static int act;
-        
+
         private const int N = 15;
         private const int M = 30;// map size
         private const char emptyCell = ' ';
@@ -40,54 +41,54 @@ namespace GameBattle
             enemyPosition = M / 2;
             map = generateBattleMap();
         }
-        
-        
+
+
         private static char[,] generateBattleMap()
         {
-           
+
             map = new char[N, M];
             for (int i = 0; i < M; i++)
             {
-                map[0,i] = '#';
+                map[0, i] = '#';
             }
 
             for (int i = 0; i < N; i++)
             {
-                map[i,M-1] = '#';
+                map[i, M - 1] = '#';
             }
 
             for (int i = 0; i < M; i++)
             {
-                map[N-1,i] = '#';
+                map[N - 1, i] = '#';
             }
 
             for (int i = 0; i < N; i++)
             {
-                map[i,0] = '#';
+                map[i, 0] = '#';
             }
 
             map[1, enemyPosition] = enemyChar;
-            map[N-2, yourPosition] = youChar;
+            map[N - 2, yourPosition] = youChar;
             return map;
-            
-        }
-        
-        private static void render()
-        {  
-                Console.Clear();
-                for (int i = 0; i < map.GetLength(0); i++)
-                {
-                    for (int j = 0; j < map.GetLength(1); j++)
 
-                        Console.Write("{0}", map[i, j]);
-                    Console.WriteLine();
-                }
-                Console.WriteLine("YOUR HEALTH:" + yourHealth);
-                Console.WriteLine("ENEMY HEALTH:" + enemyHealth);
-                //System.Threading.Thread.Sleep(300);
-            
         }
-         
+
+        private static void render()
+        {
+            Console.Clear();
+            for (int i = 0; i < map.GetLength(0); i++)
+            {
+                for (int j = 0; j < map.GetLength(1); j++)
+
+                    Console.Write("{0}", map[i, j]);
+                Console.WriteLine();
+            }
+            Console.WriteLine("{0} HEALTH:{1}", StaticFields.Name.ToUpper() , yourHealth);
+            Console.WriteLine("ENEMY HEALTH:" + enemyHealth);
+
+
+        }
+
         private static bool endGame()
         {
             if (yourHealth == 0)
@@ -95,7 +96,7 @@ namespace GameBattle
                 Console.Clear();
                 enemyActionTimer.Dispose();
                 mapdrowTimer.Dispose();
-                Console.WriteLine("       YOU LOSE        ");
+                Console.WriteLine("       {0} LOSE        ", StaticFields.Name.ToUpper());
                 PlaySound();
                 gameProcess = false;
                 return gameProcess;
@@ -105,14 +106,14 @@ namespace GameBattle
                 Console.Clear();
                 enemyActionTimer.Dispose();
                 mapdrowTimer.Dispose();
-                Console.WriteLine("         YOU WIN         ");
+                Console.WriteLine("         {0} WIN         ", StaticFields.Name.ToUpper());
                 PlaySound();
                 gameProcess = false;
                 return gameProcess;
             }
             else return true;
         }
-        public static bool process(ref int yHealth,int eHealth)
+        public static bool process(ref int yHealth, int eHealth)
         {
             Console.Title = "BATTLE";
             Console.ForegroundColor = ConsoleColor.Green;
@@ -120,7 +121,7 @@ namespace GameBattle
             yourHealth = yHealth;
             enemyHealth = eHealth;
             render();
-            
+
             do
             {
                 mapdrowTimer = new Timer(TimerMapDrowing, null, 0, 2000);
@@ -130,7 +131,7 @@ namespace GameBattle
             } while (endGame());
 
             yHealth = yourHealth;
-            if(yourHealth == 0)
+            if (yourHealth == 0)
             {
                 return false;
             }
@@ -141,25 +142,25 @@ namespace GameBattle
         }
         private static void action(ConsoleKeyInfo keyInfo)
         {
-            if (keyInfo.Key == ConsoleKey.LeftArrow && yourPosition > 1) 
-                {
+            if (keyInfo.Key == ConsoleKey.LeftArrow && yourPosition > 1)
+            {
                 System.Threading.Thread.Sleep(200);
                 map[N - 2, yourPosition] = emptyCell;
-                    yourPosition--;
-                    map[N - 2, yourPosition] = youChar;
-                }
-           else if (keyInfo.Key == ConsoleKey.RightArrow && yourPosition < M-2)
+                yourPosition--;
+                map[N - 2, yourPosition] = youChar;
+            }
+            else if (keyInfo.Key == ConsoleKey.RightArrow && yourPosition < M - 2)
             {
                 System.Threading.Thread.Sleep(200);
                 map[N - 2, yourPosition] = emptyCell;
                 yourPosition++;
                 map[N - 2, yourPosition] = youChar;
             }
-            else if(keyInfo.Key == ConsoleKey.Spacebar)
+            else if (keyInfo.Key == ConsoleKey.Spacebar)
             {
                 Console.Beep();
                 shootPosition = yourPosition;
-                for(int i = 1; i < N-2;i++)
+                for (int i = 1; i < N - 2; i++)
                 {
                     map[i, shootPosition] = shoot;
                 }
@@ -169,62 +170,58 @@ namespace GameBattle
                 {
                     Console.Beep(1000, 300);
                     enemyHealth--;
-                    //System.Threading.Thread.Sleep(100);
-                    
+
                 }
-                
-                
-                    for (int i = 1; i < N - 2; i++)
-                    {
-                        map[i, shootPosition] = emptyCell;
-                    }
-                
+
+
+                for (int i = 1; i < N - 2; i++)
+                {
+                    map[i, shootPosition] = emptyCell;
+                }
+
             }
 
         }
-         private static void EnemyAction()
+        private static void EnemyAction()
         {
-                act = rand.Next(1, 4);
-                if (act == 1 && enemyPosition > 1)
+            act = rand.Next(1, 4);
+            if (act == 1 && enemyPosition > 1)
+            {
+                System.Threading.Thread.Sleep(200);
+                map[1, enemyPosition] = emptyCell;
+                enemyPosition--;
+                map[1, enemyPosition] = enemyChar;
+            }
+            else if (act == 2 && enemyPosition < M - 2)
+            {
+                System.Threading.Thread.Sleep(200);
+                map[1, enemyPosition] = emptyCell;
+                enemyPosition++;
+                map[1, enemyPosition] = enemyChar;
+            }
+            else if (act == 3)
+            {
+                Console.Beep();
+                enemyshootPosition = enemyPosition;
+                for (int i = 2; i < N - 1; i++)
                 {
+                    map[i, enemyshootPosition] = shoot;
+                }
+
+                render();
+                if (enemyshootPosition == yourPosition)
+                {
+                    Console.Beep(1000, 300);
+                    yourHealth--;
                     System.Threading.Thread.Sleep(200);
-                    map[1, enemyPosition] = emptyCell;
-                    enemyPosition--;
-                    map[1, enemyPosition] = enemyChar;
                 }
-                else if (act == 2 && enemyPosition < M - 2)
+                for (int i = 2; i < N - 1; i++)
                 {
-                    System.Threading.Thread.Sleep(200);
-                    map[1, enemyPosition] = emptyCell;
-                    enemyPosition++;
-                    map[1, enemyPosition] = enemyChar;
+                    map[i, enemyshootPosition] = emptyCell;
                 }
-                else if (act == 3)
-                {
-                    Console.Beep();
-                    enemyshootPosition = enemyPosition;
-                    for (int i = 2; i < N-1; i++)
-                    {
-                        map[i, enemyshootPosition] = shoot;
-                    }
+            }
 
-                    render();
-                    //System.Threading.Thread.Sleep(100);
-                    if (enemyshootPosition == yourPosition)
-                    {
-                        Console.Beep(1000, 300);
-                        yourHealth--;
-                        System.Threading.Thread.Sleep(200);
-                    }
-                    for (int i = 2; i < N - 1; i++)
-                    {
-                        map[i, enemyshootPosition] = emptyCell;
-                    }
 
-                    //System.Threading.Thread.Sleep(100);
-                }
-
-            
         }
         private static void PlaySound()
         {
@@ -263,15 +260,15 @@ namespace GameBattle
         }
 
 
-        
 
-        
+
+
     }
 
 
 
-       
-    }
+
+}
 
 
 

@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 
 namespace LabyFights
 {
-    //ToDo
     public class Player
     {
         int damage;

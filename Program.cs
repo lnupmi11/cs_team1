@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using LabyFights;
 
 namespace ConsoleApplication1
@@ -16,10 +17,11 @@ namespace ConsoleApplication1
         {
             Console.WriteLine(chosenOption == 1 ? "-> New Game    <-" : "   New Game");
             Console.WriteLine(chosenOption == 2 ? "-> Leaderboard <-" : "   Leaderboard");
-            Console.WriteLine(chosenOption == 3 ? "-> Exit        <-" : "   Exit");
+            Console.WriteLine(chosenOption == 3 ? "-> About       <-" : "   About");
+            Console.WriteLine(chosenOption == 4 ? "-> Exit        <-" : "   Exit");
         }
 
-        public static void SecondMenu()
+        public static void NameMenu()
         {
             Console.Clear();
             Console.WriteLine("Enter your name:");
@@ -38,6 +40,25 @@ namespace ConsoleApplication1
         {
             Console.Clear();
             Console.WriteLine(Leaderboard.OpenLeaderboard());
+        }
+
+        public static void About()
+        {
+            Console.Clear();
+            Console.WriteLine("\t\t\t\t\t\t Hello\nIt`s little guide how play this game\n\n" +
+                              "Game have two parts: first it`s labyrinth and u have to find exit; second fight with your enemy\n\n" +
+                              "*Labyrinth: You have four moves\n" +
+                              "W - UP\n" +
+                              "S - DOWN\n" +
+                              "A - LEFT\n" +
+                              "D - RIGHT\n" +
+                              "Your position represent by &\n" +
+                              "Numbers - it`s your enemy , and number represent how many hp ur oponent have\n\n" +
+                              "*Fight with enemy: You have there moves\n" +
+                              "<- - LEFT\n" +
+                              "-> - RIGHT\n" +
+                              "SPACE - FIRE\n" +
+                              "Your goal it`s kill enemy as many times as he has health and back to labyrinth");
         }
     }
 
@@ -59,11 +80,11 @@ namespace ConsoleApplication1
                     {
                         case ConsoleKey.UpArrow:
                             if (chosenOption == 1)
-                                chosenOption = 3;
+                                chosenOption = 4;
                             chosenOption--;
                             break;
                         case ConsoleKey.DownArrow:
-                            if (chosenOption == 3)
+                            if (chosenOption == 4)
                                 chosenOption = 1;
                             chosenOption++;
                             break;
@@ -75,7 +96,7 @@ namespace ConsoleApplication1
                 if (chosenOption == 1)
                 {
                     Console.WriteLine("New game");
-                    Menu.SecondMenu();
+                    Menu.NameMenu();
                     key = new ConsoleKey();
                     while (key != ConsoleKey.Enter && key != ConsoleKey.RightArrow)
                     {
@@ -111,6 +132,15 @@ namespace ConsoleApplication1
                         key = Console.ReadKey().Key;
                     }
                 }
+                else if (chosenOption == 3)
+                {
+                    while (key != ConsoleKey.Escape)
+                    {
+                        Menu.About();
+                        key = Console.ReadKey().Key;
+                    }
+                }
+
             }
         }
     }

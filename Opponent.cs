@@ -26,13 +26,5 @@ namespace LabyFights
                 damage = value;
             }
         }
-
-        //public void UseWeapon()
-        //{
-        //    if (damage > 0)
-        //    {
-        //        damage -= 1;
-        //    }
-        //}
     }
 }
