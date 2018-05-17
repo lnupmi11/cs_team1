@@ -11,9 +11,10 @@ namespace LabyFights
     public class Player
     {
         int damage;
-        public Player(int damage)
+        public Player(int damage, int score)
         {
             this.damage = damage;
+            this.Score = score;
         }
         public int Damage
         {
@@ -34,5 +35,7 @@ namespace LabyFights
                 damage -= 1;
             }
         }
+
+        public int Score { get; set; }
     }
 }

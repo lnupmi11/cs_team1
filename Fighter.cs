@@ -10,6 +10,7 @@ namespace LabyFights
     public class Fighter
     {
         int currentLife;
+        int currentScore;
         Maze maze;
         int currentRow;
         int currentCol;
@@ -20,6 +21,7 @@ namespace LabyFights
             this.currentCol = col;
             this.currentRow = row;
             this.currentLife = maze.MyMaze[maze.Player.Item1, maze.Player.Item2].Player.Damage;
+            this.currentScore = maze.MyMaze[maze.Player.Item1, maze.Player.Item2].Player.Score;
             this.maze.MyMaze[row, col].Fighter = true;
             this.maze.printCell(row, col);
             Thread threadWhosMovingFighter = new Thread(Move);
@@ -33,7 +35,7 @@ namespace LabyFights
             maze.MyMaze[coordinat.Item1, coordinat.Item2].Player = null;
             maze.Player = Tuple.Create(currentRow, currentCol);
             coordinat = maze.Player;
-            maze.MyMaze[coordinat.Item1, coordinat.Item2].Player = new Player(currentLife);
+            maze.MyMaze[coordinat.Item1, coordinat.Item2].Player = new Player(currentLife, currentScore - 5);
             Console.Clear();
             for (int i = 0; i < maze.MyMaze.GetLength(0); i++)
             {

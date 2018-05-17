@@ -181,7 +181,7 @@ namespace LabyFights
             int row, col;
             row = rdm.Next(this.height);
             col = rdm.Next(this.width);
-            myMaze[row, col].Player = new Player(100);
+            myMaze[row, col].Player = new Player(100, 100);
             this.player = Tuple.Create(row, col);
         }
 

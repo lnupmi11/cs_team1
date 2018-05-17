@@ -4,31 +4,40 @@ using LabyFights;
 
 namespace ConsoleApplication1
 {
-    class StaticFields
+    struct StaticFields
     {
-        public static int complexity;
-        public static string name;
+        public static int Difficulty;
+        public static string Name;
     }
 
     class Menu
     {
-        public static void FirstMenu()
+        public static void FirstMenu(int chosenOption)
         {
-            Console.WriteLine("1) New game");
-            Console.WriteLine("2) About");
-            Console.WriteLine("3) Exit");
+            Console.WriteLine(chosenOption == 1 ? "-> New Game    <-" : "   New Game");
+            Console.WriteLine(chosenOption == 2 ? "-> Leaderboard <-" : "   Leaderboard");
+            Console.WriteLine(chosenOption == 3 ? "-> Exit        <-" : "   Exit");
         }
 
         public static void SecondMenu()
         {
             Console.Clear();
             Console.WriteLine("Enter your name:");
-            StaticFields.name = Console.ReadLine();
-            Console.Clear();
-            Console.WriteLine("Enter your complexity:");
-            string stream = Console.ReadLine();
-            bool check = Int32.TryParse(stream, out StaticFields.complexity);
+            StaticFields.Name = Console.ReadLine();
+        }
 
+        public static void ThirdMenu(int chosenOption)
+        {
+            Console.Clear();
+            Console.WriteLine(chosenOption == 1 ? "-> Easy    <-" : "   Easy");
+            Console.WriteLine(chosenOption == 2 ? "-> Medium  <-" : "   Medium");
+            Console.WriteLine(chosenOption == 3 ? "-> Hard    <-" : "   Hard");
+        }
+
+        public static void LeaderboardMenu()
+        {
+            Console.Clear();
+            Console.WriteLine(Leaderboard.OpenLeaderboard());
         }
     }
 
@@ -36,27 +45,73 @@ namespace ConsoleApplication1
     {
         static void Main(string[] args)
         {
-            int choice;
-            string stream;
-            Menu.FirstMenu();
-            stream = Console.ReadLine();
-            bool check = Int32.TryParse(stream, out choice);
-            while(check != true)
+            int chosenOption = 1;
+            ConsoleKey key = new ConsoleKey();
+            while (true)
             {
-                Console.Clear();
-                Menu.FirstMenu();
-                stream = Console.ReadLine();
-                check = Int32.TryParse(stream, out choice);
-            }
-            switch (choice)
-            {
-                case 1:
+                while (key != ConsoleKey.Enter && key != ConsoleKey.RightArrow)
+                {
+                    Console.Clear();
+                    Menu.FirstMenu(chosenOption);
+                    key = Console.ReadKey().Key;
+
+                    switch (key)
+                    {
+                        case ConsoleKey.UpArrow:
+                            if (chosenOption == 1)
+                                chosenOption = 3;
+                            chosenOption--;
+                            break;
+                        case ConsoleKey.DownArrow:
+                            if (chosenOption == 3)
+                                chosenOption = 1;
+                            chosenOption++;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                if (chosenOption == 1)
+                {
+                    Console.WriteLine("New game");
                     Menu.SecondMenu();
-                    break;
+                    key = new ConsoleKey();
+                    while (key != ConsoleKey.Enter && key != ConsoleKey.RightArrow)
+                    {
+                        Console.Clear();
+                        Menu.ThirdMenu(chosenOption);
+                        key = Console.ReadKey().Key;
+
+                        switch (key)
+                        {
+                            case ConsoleKey.UpArrow:
+                                if (chosenOption == 1)
+                                    chosenOption = 3;
+                                chosenOption--;
+                                break;
+                            case ConsoleKey.DownArrow:
+                                if (chosenOption == 3)
+                                    chosenOption = 1;
+                                chosenOption++;
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+
+                    StaticFields.Difficulty = chosenOption;
+                    Play.NewGame();
+                }
+                else if (chosenOption == 2)
+                {
+                    while (key != ConsoleKey.Escape)
+                    {
+                        Menu.LeaderboardMenu();
+                        key = Console.ReadKey().Key;
+                    }
+                }
             }
-            
-            Console.WriteLine("New game");
-            Play.NewGame();
         }
     }
 }
