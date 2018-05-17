@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 
-namespace ConsoleApp1
+namespace GameBattle
 {
     public class Battle
     { 
@@ -112,7 +112,7 @@ namespace ConsoleApp1
             }
             else return true;
         }
-        public static void process(int yHealth,int eHealth)
+        public static bool process(ref int yHealth,int eHealth)
         {
             Console.Title = "BATTLE";
             Console.ForegroundColor = ConsoleColor.Green;
@@ -128,8 +128,16 @@ namespace ConsoleApp1
                 keyInfo = Console.ReadKey();
                 action(keyInfo);
             } while (endGame());
-            
 
+            yHealth = yourHealth;
+            if(yourHealth == 0)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
         private static void action(ConsoleKeyInfo keyInfo)
         {
